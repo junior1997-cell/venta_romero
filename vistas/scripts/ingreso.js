@@ -187,7 +187,7 @@ function anular(idingreso) {
 		if (result) {
 			$.post("../ajax/ingreso.php?op=anular", { idingreso: idingreso }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload();
+				tabla.ajax.reload(null, false);
 			});
 		}
 	})

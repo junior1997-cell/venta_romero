@@ -19,7 +19,7 @@ Class Consultas
 	public function ventasfechacliente($fecha_inicio,$fecha_fin,$idcliente)	{
 		$sql="SELECT DATE(v.fecha_hora) as fecha, u.nombre as usuario, p.nombre as cliente,v.tipo_comprobante,v.serie_comprobante,v.num_comprobante,
 		v.total_venta,v.impuesto, v.estado,
-		(select sum(IFNULL(precio_compra, 0)) from detalle_venta where idventa = v.idventa) as utilidad
+		(select sum(IFNULL(precio_compra, 0)) from detalle_venta where idventa = v.idventa) as precio_compra
 		FROM venta v 
 		INNER JOIN persona p ON v.idcliente=p.idpersona 
 		INNER JOIN usuario u ON v.idusuario=u.idusuario 

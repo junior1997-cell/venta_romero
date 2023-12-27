@@ -66,7 +66,7 @@ if ($_SESSION['compras']==1)
                           </div>
                           <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
                             <label>Fecha(*):</label>
-                            <input type="date" class="form-control" name="fecha_hora" id="fecha_hora" required="">
+                            <input type="date" class="form-control" name="fecha_hora" id="fecha_hora" required="" value="<?php echo date("Y-m-d"); ?>">
                           </div>
                           <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <label>Tipo Comprobante(*):</label>

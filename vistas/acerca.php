@@ -27,12 +27,10 @@ require 'header.php';
                     <!-- /.box-header -->
                     <!-- centro -->
                     <div class="panel-body">
-                    	<h4>Proyecto: </h4> <p>AdVentas 3.0 - Sistema de Ventas, Compras y Almacén</p>
-		                <h4>Empresa: </h4> <p>Soluciones Innovadoras Peru S.A.C.</p>
-		                <h4>Desarrollado por: </h4> <p>jcarlos.ad7@gmail.com</p>
-		                <h4>Web: </h4><a href="http://www.incanatoit.com/p/tienda.html" target="_blank"> <p>www.incanatoit.com</p></a>
-		                <h4>Cursos: </h4> <a href="https://www.udemy.com/user/juan-carlos-arcila-diaz/" target="_blank"><p>Mis cursos en Udemy</p></a>
-		                <h4>Canal Youtube: </h4> <a href="https://www.youtube.com/jcarlosad7" target="_blank"><p>www.youtube.com/jcarlosad7</p></a>
+                    	<h4>Proyecto: </h4> <p>Sistema de Ventas</p>
+		                <h4>Empresa: </h4> <p>Heladeria Romero</p>
+		                <h4>Desarrollado por: </h4> <p> jdltechnology19@gmail.com </p>
+		                <h4>Web: </h4><a href="https://jdl.pe/" target="_blank"> <p>JDL Technology</p></a>
                     </div>
                     <!--Fin centro -->
                   </div><!-- /.box -->

@@ -217,6 +217,9 @@ switch ($_GET["op"]){
 	        $_SESSION['nombre']=$fetch->nombre;
 	        $_SESSION['imagen']=$fetch->imagen;
 	        $_SESSION['login']=$fetch->login;
+	        $_SESSION['telefono']=$fetch->telefono;
+	        $_SESSION['email']=$fetch->email;
+	        $_SESSION['cargo']=$fetch->cargo;
 
 	        //Obtenemos los permisos del usuario
 	    	$marcados = $usuario->listarmarcados($fetch->idusuario);

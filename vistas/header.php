@@ -36,7 +36,7 @@ if (strlen(session_id()) < 1)
       <header class="main-header">
 
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="escritorio.php" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>AD</b>Ventas</span>
           <!-- logo for regular state and mobile devices -->
@@ -65,8 +65,12 @@ if (strlen(session_id()) < 1)
                   <li class="user-header">
                     <img src="../files/usuarios/<?php echo $_SESSION['imagen']; ?>" class="img-circle" alt="User Image">
                     <p>
-                      www.incanatoit.com - Desarrollando Software
-                      <small>www.youtube.com/jcarlosad7</small>
+                      <?php echo $_SESSION['nombre']; ?>
+                      <small>Correo : <?php echo $_SESSION['email']; ?></small>
+                      <small>Cargo :  <?php echo $_SESSION['cargo']; ?></small>
+                      <!-- <small>https://jdl.pe/</small> -->
+
+                      <!-- telefono,email,cargo -->
                     </p>
                   </li>
                   
@@ -201,12 +205,6 @@ if (strlen(session_id()) < 1)
             }
             ?>
 
-            <li>
-              <a href="ayuda.php">
-                <i class="fa fa-plus-square"></i> <span>Ayuda</span>
-                <small class="label pull-right bg-red">PDF</small>
-              </a>
-            </li>
             <li>
               <a href="acerca.php">
                 <i class="fa fa-info-circle"></i> <span>Acerca De...</span>

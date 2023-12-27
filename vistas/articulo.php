@@ -61,14 +61,10 @@ if (!isset($_SESSION["nombre"])) {
                     <label>Categoría(*):</label>
                     <select id="idcategoria" name="idcategoria" class="form-control selectpicker" data-live-search="true" required></select>
                   </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Stock(*):</label>
                     <input type="number" class="form-control" name="stock" id="stock" required>
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <label>Stock(*):</label>
-                    <input type="number" class="form-control" name="stock" id="stock" required>
-                  </div>
+                  </div>                  
                   <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Precio compra(*):</label>
                     <input type="number" class="form-control" name="precio_compra" id="precio_compra" required>
@@ -77,9 +73,9 @@ if (!isset($_SESSION["nombre"])) {
                     <label>Precio venta(*):</label>
                     <input type="number" class="form-control" name="precio_venta" id="precio_venta" required>
                   </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                  <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Descripción:</label>
-                    <input type="text" class="form-control" name="descripcion" id="descripcion" maxlength="256" placeholder="Descripción">
+                    <textarea name="descripcion" id="descripcion" class="form-control"  rows="1"></textarea>
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Imagen:</label>

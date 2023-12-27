@@ -63,15 +63,15 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Stock(*):</label>
-                    <input type="number" class="form-control" name="stock" id="stock" required>
+                    <input type="number" class="form-control" name="stock" id="stock" min="0" required>
                   </div>                  
                   <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Precio compra(*):</label>
-                    <input type="number" class="form-control" name="precio_compra" id="precio_compra" required>
+                    <input type="number" class="form-control" name="precio_compra" id="precio_compra" step="0.01" min="0" required>
                   </div>
                   <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Precio venta(*):</label>
-                    <input type="number" class="form-control" name="precio_venta" id="precio_venta" required>
+                    <input type="number" class="form-control" name="precio_venta" id="precio_venta" step="0.01" min="0" required>
                   </div>
                   <div class="form-group col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <label>Descripción:</label>

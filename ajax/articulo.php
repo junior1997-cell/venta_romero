@@ -36,7 +36,7 @@ if (!isset($_SESSION["nombre"])) {
 					}
 				}
 				if (empty($idarticulo)) {
-					$rspta = $articulo->insertar($idcategoria, $codigo, $nombre, $stock, $descripcion, $imagen, $precio_compra, $precio_venta);
+					$rspta = $articulo->insertar($idcategoria, $codigo, $nombre, $stock, $descripcion, $imagen, round($precio_compra, 2), round($precio_venta, 2));
 					echo $rspta ? "Artículo registrado" : "Artículo no se pudo registrar";
 				} else {
 					$rspta = $articulo->editar($idarticulo, $idcategoria, $codigo, $nombre, $stock, $descripcion, $imagen, $precio_compra, $precio_venta);

@@ -11,13 +11,17 @@ Class Venta
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idcliente,$idusuario,$tipo_comprobante,$serie_comprobante,$num_comprobante,$fecha_hora,$impuesto,$total_venta,
-	$idarticulo,$cantidad,$precio_venta, $precio_compra, $descuento, $subtotal)
-	{
-		$sql="INSERT INTO venta (idcliente,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto,total_venta,estado)
-		VALUES ('$idcliente','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto','$total_venta','Aceptado')";
-		//return ejecutarConsulta($sql);
+	public function insertar($idcliente,$idusuario,$tipo_comprobante, $observacion, $fecha_hora,$impuesto,$total_venta,
+	$idarticulo,$cantidad,$precio_venta, $precio_compra, $descuento, $subtotal)	{
+
+		$sql="INSERT INTO venta (idcliente,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto,total_venta, observacion, estado)
+		VALUES ('$idcliente','$idusuario','$tipo_comprobante',(SELECT serie FROM catalogo1 WHERE idcatalogo1 = 1), (SELECT (numero + 1) as numero FROM catalogo1 WHERE idcatalogo1 = 1),
+		'$fecha_hora','$impuesto','$total_venta', '$observacion', 'Aceptado')";		
 		$idventanew=ejecutarConsulta_retornarID($sql);
+
+		// actualizamos el correlatvo
+		$sql="UPDATE catalogo1 SET numero=numero+1 WHERE idcatalogo1='1'";
+		ejecutarConsulta($sql);
 
 		$ii=0;
 		$sw=true;
@@ -25,7 +29,12 @@ Class Venta
 		while ($ii < count($idarticulo))		{
 			$sql_detalle = "INSERT INTO detalle_venta(idventa, idarticulo, cantidad, precio_venta, precio_compra, descuento, subtotal) VALUES 
 			('$idventanew', '$idarticulo[$ii]', '$cantidad[$ii]', '$precio_venta[$ii]', '$precio_compra[$ii]', '$descuento[$ii]', '$subtotal[$ii]')";
-			ejecutarConsulta($sql_detalle) or $sw = false;
+			ejecutarConsulta($sql_detalle) or $sw = false;			
+
+			// Reducimos el STOCK
+			$sql_producto = "UPDATE articulo SET stock = stock - '$cantidad[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
+      ejecutarConsulta($sql_producto);
+
 			$ii=$ii + 1;
 		}
 

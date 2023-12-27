@@ -1,4 +1,4 @@
-var tabla;
+var tabla_venta;
 
 //Función que se ejecuta al inicio
 function init() {
@@ -17,9 +17,8 @@ function init() {
 function limpiar() {
 	$("#idcliente").val("");
 	$("#idcliente").selectpicker('refresh');
-	$("#cliente").val("");
-	$("#serie_comprobante").val("");
-	$("#num_comprobante").val("");
+	$("#cliente").val("");	
+	$("#observacion").val("");
 	$("#impuesto").val("0");
 
 	$("#total_venta").val("");
@@ -64,12 +63,19 @@ function cancelarform() {
 
 //Función Listar
 function listar() {
-	tabla = $('#tbllistado').dataTable(	{
+	tabla_venta = $('#tbllistado').dataTable(	{
 			lengthMenu: [[ -1, 5, 10, 25, 75, 100, 200,], ["Todos", 5, 10, 25, 75, 100, 200, ]], //mostramos el menú de registros a revisar
 			"aProcessing": true,//Activamos el procesamiento del datatables
 			"aServerSide": true,//Paginación y filtrado realizados por el servidor
 			dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
-			buttons: ['copyHtml5','excelHtml5','csvHtml5','pdf'],
+			buttons: [
+				'copyHtml5','excelHtml5',	'csvHtml5',	'pdf'
+				// { text: '<i class="fa-solid fa-arrows-rotate" data-toggle="tooltip" data-original-title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_venta.ajax.reload(); } },
+				// { extend: 'copyHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-copy" data-toggle="tooltip" data-original-title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
+				// { extend: 'excelHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-file-excel fa-lg" data-toggle="tooltip" data-original-title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
+				// { extend: 'pdfHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-file-pdf fa-lg" data-toggle="tooltip" data-original-title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
+				// { extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },
+			],
 			"ajax":	{
 				url: '../ajax/venta.php?op=listar',
 				type: "get",
@@ -136,15 +142,17 @@ function guardaryeditar(e) {
 		data: formData,
 		contentType: false,
 		processData: false,
-
 		success: function (datos) {
-			bootbox.alert(datos);
-			mostrarform(false);
-			listar();
+			if (datos == 'ok') {
+				bootbox.alert('Datos registrados correctamente.');
+				mostrarform(false);
+				listar();
+				limpiar();
+			} else {
+				bootbox.alert(datos);
+			}			
 		}
-
-	});
-	limpiar();
+	});	
 }
 
 function mostrar(idventa) {
@@ -156,8 +164,7 @@ function mostrar(idventa) {
 		$("#idcliente").selectpicker('refresh');
 		$("#tipo_comprobante").val(data.tipo_comprobante);
 		$("#tipo_comprobante").selectpicker('refresh');
-		$("#serie_comprobante").val(data.serie_comprobante);
-		$("#num_comprobante").val(data.num_comprobante);
+		$("#observacion").val(data.observacion);
 		$("#fecha_hora").val(data.fecha);
 		$("#impuesto").val(data.impuesto);
 		$("#idventa").val(data.idventa);
@@ -179,7 +186,7 @@ function anular(idventa) {
 		if (result) {
 			$.post("../ajax/venta.php?op=anular", { idventa: idventa }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload();
+				tabla_venta.ajax.reload();
 			});
 		}
 	})

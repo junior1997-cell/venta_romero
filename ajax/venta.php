@@ -15,9 +15,8 @@ if (!isset($_SESSION["nombre"])) {
 		$idventa 						= isset($_POST["idventa"]) ? limpiarCadena($_POST["idventa"]) : "";
 		$idcliente 					= isset($_POST["idcliente"]) ? limpiarCadena($_POST["idcliente"]) : "";
 		$idusuario 					= $_SESSION["idusuario"];
-		$tipo_comprobante 	= isset($_POST["tipo_comprobante"]) ? limpiarCadena($_POST["tipo_comprobante"]) : "";
-		$serie_comprobante 	= isset($_POST["serie_comprobante"]) ? limpiarCadena($_POST["serie_comprobante"]) : "";
-		$num_comprobante 		= isset($_POST["num_comprobante"]) ? limpiarCadena($_POST["num_comprobante"]) : "";
+		$tipo_comprobante 	= isset($_POST["tipo_comprobante"]) ? limpiarCadena($_POST["tipo_comprobante"]) : "";		
+		$observacion 				= isset($_POST["observacion"]) ? limpiarCadena($_POST["observacion"]) : "";
 		$fecha_hora 				= isset($_POST["fecha_hora"]) ? limpiarCadena($_POST["fecha_hora"]) : "";
 		$impuesto 					= isset($_POST["impuesto"]) ? limpiarCadena($_POST["impuesto"]) : "";
 		$total_venta 				= isset($_POST["total_venta"]) ? limpiarCadena($_POST["total_venta"]) : "";
@@ -25,9 +24,9 @@ if (!isset($_SESSION["nombre"])) {
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
 				if (empty($idventa)) {
-					$rspta = $venta->insertar($idcliente, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, $total_venta, 
+					$rspta = $venta->insertar($idcliente, $idusuario, $tipo_comprobante,  $observacion, $fecha_hora, $impuesto, $total_venta, 
 					$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_venta"], $_POST["precio_compra"], $_POST["descuento"], $_POST["subtotal_pr"],);
-					echo $rspta ? "Venta registrada" : "No se pudieron registrar todos los datos de la venta";
+					echo $rspta ? "ok" : "No se pudieron registrar todos los datos de la venta";
 				} else {
 				}
 			break;

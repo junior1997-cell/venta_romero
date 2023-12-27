@@ -222,10 +222,10 @@ function agregarDetalle(idarticulo, articulo, precio_venta, precio_compra) {
 			<td><input type="hidden" name="idarticulo[]" value="${idarticulo}">${articulo}</td>
 			<td><input type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" onkeyup="modificarSubototales();"></td>
 			<td>
-				<input type="number" name="precio_venta[]" id="precio_venta[]" value="${precio_venta}" onkeyup="modificarSubototales();">
-				<input type="hidden" name="precio_compra[]" id="precio_compra[]" value="${precio_compra}">
+				<input type="number" name="precio_venta[]" id="precio_venta[]" value="${precio_venta}" step="0.0001" min="0" onkeyup="modificarSubototales();">
+				<input type="hidden" name="precio_compra[]" id="precio_compra[]" value="${precio_compra}" step="0.0001" min="0">
 			</td>
-			<td><input type="number" name="descuento[]" value="${descuento}" onkeyup="modificarSubototales();"></td>
+			<td><input type="number" name="descuento[]" value="${descuento}" step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
 			<td>
 				<input type="hidden" name="subtotal_pr[]" id="subtotal_pr_${cont}" value="${subtotal}">
 				<span name="subtotal" id="subtotal${cont}">${subtotal}</span>

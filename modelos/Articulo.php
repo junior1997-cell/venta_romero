@@ -11,17 +11,20 @@ Class Articulo
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idcategoria,$codigo,$nombre,$stock,$descripcion,$imagen)
+	public function insertar($idcategoria,$codigo,$nombre,$stock,$descripcion,$imagen, $precio_compra, $precio_venta)
 	{
-		$sql="INSERT INTO articulo (idcategoria,codigo,nombre,stock,descripcion,imagen,condicion)
-		VALUES ('$idcategoria','$codigo','$nombre','$stock','$descripcion','$imagen','1')";
+		$sql="INSERT INTO articulo (idcategoria,codigo,nombre,stock, precio_compra, precio_venta, descripcion,imagen,condicion)
+		VALUES ('$idcategoria','$codigo','$nombre','$stock', '$precio_compra', '$precio_venta', '$descripcion','$imagen','1')";
 		return ejecutarConsulta($sql);
 	}
 
 	//Implementamos un método para editar registros
-	public function editar($idarticulo,$idcategoria,$codigo,$nombre,$stock,$descripcion,$imagen)
+	public function editar($idarticulo,$idcategoria,$codigo,$nombre,$stock,$descripcion,$imagen, $precio_compra, $precio_venta)
 	{
-		$sql="UPDATE articulo SET idcategoria='$idcategoria',codigo='$codigo',nombre='$nombre',stock='$stock',descripcion='$descripcion',imagen='$imagen' WHERE idarticulo='$idarticulo'";
+		$sql="UPDATE articulo SET idcategoria='$idcategoria',codigo='$codigo',nombre='$nombre',
+		precio_compra = '$precio_compra', precio_venta = '$precio_venta',
+		stock='$stock',descripcion='$descripcion',imagen='$imagen' 
+		WHERE idarticulo='$idarticulo'";
 		return ejecutarConsulta($sql);
 	}
 
@@ -49,7 +52,8 @@ Class Articulo
 	//Implementar un método para listar los registros
 	public function listar()
 	{
-		$sql="SELECT a.idarticulo,a.idcategoria,c.nombre as categoria,a.codigo,a.nombre,a.stock,a.descripcion,a.imagen,a.condicion FROM articulo a INNER JOIN categoria c ON a.idcategoria=c.idcategoria";
+		$sql="SELECT a.idarticulo,a.idcategoria,c.nombre as categoria,a.codigo,a.nombre,a.stock,a.descripcion,a.imagen,a.condicion, precio_venta, precio_compra 
+		FROM articulo a INNER JOIN categoria c ON a.idcategoria=c.idcategoria";
 		return ejecutarConsulta($sql);		
 	}
 
@@ -64,9 +68,7 @@ Class Articulo
 	public function listarActivosVenta()
 	{
 		$sql="SELECT a.idarticulo,a.idcategoria,c.nombre as categoria,a.codigo,a.nombre,a.stock,
-		(SELECT precio_venta FROM detalle_ingreso WHERE idarticulo=a.idarticulo order by iddetalle_ingreso desc limit 0,1) as precio_venta,
-		(SELECT precio_compra FROM detalle_ingreso WHERE idarticulo=a.idarticulo order by iddetalle_ingreso desc limit 0,1) as precio_compra,
-		a.descripcion,a.imagen,a.condicion 
+		a.precio_venta,	a.precio_compra,	a.descripcion,a.imagen,a.condicion 
 		FROM articulo a 
 		INNER JOIN categoria c ON a.idcategoria=c.idcategoria 
 		WHERE a.condicion='1'";

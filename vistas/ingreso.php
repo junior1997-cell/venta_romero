@@ -23,7 +23,7 @@ if ($_SESSION['compras']==1)
               <div class="col-md-12">
                   <div class="box">
                     <div class="box-header with-border">
-                          <h1 class="box-title">Ingreso <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptingresos.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
+                          <h1 class="box-title">Ingreso <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true); limpiar();"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptingresos.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
                         <div class="box-tools pull-right">
                         </div>
                     </div>
@@ -55,7 +55,7 @@ if ($_SESSION['compras']==1)
                           </tfoot>
                         </table>
                     </div>
-                    <div class="panel-body" style="height: 100%;" id="formularioregistros">
+                    <div class="panel-body" style="height: 100%; display: none !important;" id="formularioregistros">
                         <form name="formulario" id="formulario" method="POST">
                           <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12">
                             <label>Proveedor(*):</label>

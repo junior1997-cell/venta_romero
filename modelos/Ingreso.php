@@ -14,18 +14,22 @@ Class Ingreso
 	public function insertar($idproveedor,$idusuario,$tipo_comprobante,$serie_comprobante,$num_comprobante,$fecha_hora,$impuesto,$total_compra,$idarticulo,$cantidad,$precio_compra,$precio_venta)
 	{
 		$sql="INSERT INTO ingreso (idproveedor,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto,total_compra,estado)
-		VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto','$total_compra','Aceptado')";
-		//return ejecutarConsulta($sql);
+		VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto','$total_compra','Aceptado')";		
 		$idingresonew=ejecutarConsulta_retornarID($sql);
 
-		$num_elementos=0;
+		$ii=0;
 		$sw=true;
 
-		while ($num_elementos < count($idarticulo))
-		{
-			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo,cantidad,precio_compra,precio_venta) VALUES ('$idingresonew', '$idarticulo[$num_elementos]','$cantidad[$num_elementos]','$precio_compra[$num_elementos]','$precio_venta[$num_elementos]')";
+		while ($ii < count($idarticulo))	{
+			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo,cantidad,precio_compra,precio_venta) VALUES 
+			('$idingresonew', '$idarticulo[$ii]','$cantidad[$ii]','$precio_compra[$ii]','$precio_venta[$ii]')";
 			ejecutarConsulta($sql_detalle) or $sw = false;
-			$num_elementos=$num_elementos + 1;
+
+			// Reducimos el STOCK
+			$sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
+      ejecutarConsulta($sql_producto);
+
+			$ii=$ii + 1;
 		}
 
 		return $sw;

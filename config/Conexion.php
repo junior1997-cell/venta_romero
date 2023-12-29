@@ -21,6 +21,13 @@ if (!function_exists('ejecutarConsulta'))
 		return $query;
 	}
 
+	function ejecutarConsultaArray($sql) {
+    global $conexion;
+    $query = $conexion->query($sql);
+    for ($data = array(); $row = $query->fetch_assoc(); $data[] = $row);
+    return $data;
+  }
+
 	function ejecutarConsultaSimpleFila($sql)
 	{
 		global $conexion;

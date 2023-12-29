@@ -351,8 +351,10 @@ function addCols( $tab )
 	$this->Line( $r1, $y1+6, $r1+$r2, $y1+6);
 	$colX = $r1;
 	$colonnes = $tab;
-	while ( list( $lib, $pos ) = each ($tab) )
-	{
+
+	foreach ($tab as $lib => $pos) {
+		
+	// while ( list( $lib, $pos ) = each ($tab) )	{
 		$this->SetXY( $colX, $y1+2 );
 		$this->Cell( $pos, 1, $lib, 0, 0, "C");
 		$colX += $pos;
@@ -364,8 +366,8 @@ function addLineFormat( $tab )
 {
 	global $format, $colonnes;
 	
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
+	foreach ($colonnes as $lib => $pos) {
+	// while ( list( $lib, $pos ) = each ($colonnes) )	{
 		if ( isset( $tab["$lib"] ) )
 			$format[ $lib ] = $tab["$lib"];
 	}
@@ -377,8 +379,9 @@ function lineVert( $tab )
 
 	reset( $colonnes );
 	$maxSize=0;
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
+
+	foreach ($colonnes as $lib => $pos) {
+	// while ( list( $lib, $pos ) = each ($colonnes) )	{
 		$texte = $tab[ $lib ];
 		$longCell  = $pos -2;
 		$size = $this->sizeOfText( $texte, $longCell );
@@ -403,9 +406,9 @@ function addLine( $ligne, $tab )
 	$ordonnee     = 10;
 	$maxSize      = $ligne;
 
-	reset( $colonnes );
-	while ( list( $lib, $pos ) = each ($colonnes) )
-	{
+	// reset( $colonnes );
+	foreach ($colonnes as $lib => $pos) {
+	// while ( list( $lib, $pos ) = each ($colonnes) )	{
 		$longCell  = $pos -2;
 		$texte     = $tab[ $lib ];
 		$length    = $this->GetStringWidth( $texte );

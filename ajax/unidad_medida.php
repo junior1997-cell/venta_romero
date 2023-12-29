@@ -8,41 +8,41 @@ if (!isset($_SESSION["nombre"])) {
 } else {
 	//Validamos el acceso solo al usuario logueado y autorizado.
 	if ($_SESSION['almacen'] == 1) {
-		require_once "../modelos/Categoria.php";
+		require_once "../modelos/Unidad_medida.php";
 
-		$categoria = new Categoria();
+		$categoria = new UnidadMedida();
 
 		date_default_timezone_set('America/Lima'); $date_now = date("d_m_Y__h_i_s_A");
     $imagen_error = "this.src='../dist/svg/404-v2.svg'";
     $toltip = '<script> $(function () { $(\'[data-toggle="tooltip"]\').tooltip(); }); </script>';
 
-		$idcategoria = isset($_POST["idcategoria"]) ? limpiarCadena($_POST["idcategoria"]) : "";
+		$idunida_medida = isset($_POST["idunida_medida"]) ? limpiarCadena($_POST["idunida_medida"]) : "";
 		$nombre = isset($_POST["nombre"]) ? limpiarCadena($_POST["nombre"]) : "";
 		$descripcion = isset($_POST["descripcion"]) ? limpiarCadena($_POST["descripcion"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
-				if (empty($idcategoria)) {
+				if (empty($idunida_medida)) {
 					$rspta = $categoria->insertar($nombre, $descripcion);
-					echo $rspta ? "Categoría registrada" : "Categoría no se pudo registrar";
+					echo $rspta ? "Unidad de medida registrada" : "Unidad de medida no se pudo registrar";
 				} else {
-					$rspta = $categoria->editar($idcategoria, $nombre, $descripcion);
-					echo $rspta ? "Categoría actualizada" : "Categoría no se pudo actualizar";
+					$rspta = $categoria->editar($idunida_medida, $nombre, $descripcion);
+					echo $rspta ? "Unidad de medida actualizada" : "Unidad de medida no se pudo actualizar";
 				}
 				break;
 
 			case 'desactivar':
-				$rspta = $categoria->desactivar($idcategoria);
-				echo $rspta ? "Categoría Desactivada" : "Categoría no se puede desactivar";
+				$rspta = $categoria->desactivar($idunida_medida);
+				echo $rspta ? "Unidad de medida Desactivada" : "Unidad de medida no se puede desactivar";
 				break;
 
 			case 'activar':
-				$rspta = $categoria->activar($idcategoria);
-				echo $rspta ? "Categoría activada" : "Categoría no se puede activar";
+				$rspta = $categoria->activar($idunida_medida);
+				echo $rspta ? "Unidad de medida activada" : "Unidad de medida no se puede activar";
 				break;
 
 			case 'mostrar':
-				$rspta = $categoria->mostrar($idcategoria);
+				$rspta = $categoria->mostrar($idunida_medida);
 				//Codificar el resultado utilizando json
 				echo json_encode($rspta);
 				break;
@@ -54,14 +54,13 @@ if (!isset($_SESSION["nombre"])) {
 
 				while ($reg = $rspta->fetch_object()) {
 					$data[] = array(
-						"0" => ($reg->condicion) ? '<button class="btn btn-warning" onclick="mostrar(' . $reg->idcategoria . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-danger" onclick="desactivar(' . $reg->idcategoria . ')"><i class="fa fa-close"></i></button>' :
-							'<button class="btn btn-warning" onclick="mostrar(' . $reg->idcategoria . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-primary" onclick="activar(' . $reg->idcategoria . ')"><i class="fa fa-check"></i></button>',
+						"0" => '<button class="btn btn-warning btn-sm" disabled data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>' .
+						(($reg->estado) ? ' <button class="btn btn-danger btn-sm" onclick="desactivar(' . $reg->idunida_medida . ')" data-toggle="tooltip" data-placement="top" title="Desactivar"><i class="fa fa-close"></i></button>' :							 
+							' <button class="btn btn-primary btn-sm" onclick="activar(' . $reg->idunida_medida . ')" data-toggle="tooltip" data-placement="top" title="Activar"><i class="fa fa-check"></i></button>'),
 						"1" => $reg->nombre,
-						"2" => $reg->descripcion,
-						"3" => ($reg->condicion) ? '<span class="label bg-green">Activado</span>' :
-							'<span class="label bg-red">Desactivado</span>'
+						"2" => $reg->abreviatura,
+						"3" => $reg->equivalencia,
+						"4" => (($reg->estado) ? '<span class="label bg-green">Activado</span>' :	'<span class="label bg-red">Desactivado</span>') . $toltip
 					);
 				}
 				$results = array(

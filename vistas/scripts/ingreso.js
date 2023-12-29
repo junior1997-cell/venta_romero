@@ -69,67 +69,70 @@ function cancelarform() {
 
 //Función Listar
 function listar() {
-	tabla = $('#tbllistado').dataTable(
-		{
-			"lengthMenu": [5, 10, 25, 75, 100],//mostramos el menú de registros a revisar
-			"aProcessing": true,//Activamos el procesamiento del datatables
-			"aServerSide": true,//Paginación y filtrado realizados por el servidor
-			dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
-			buttons: [
-				'copyHtml5',
-				'excelHtml5',
-				'csvHtml5',
-				'pdf'
-			],
-			"ajax":
-			{
-				url: '../ajax/ingreso.php?op=listar',
-				type: "get",
-				dataType: "json",
-				error: function (e) {
-					console.log(e.responseText);
-				}
-			},
-			"language": {
-				"lengthMenu": "Mostrar : _MENU_ registros",
-				"buttons": {
-					"copyTitle": "Tabla Copiada",
-					"copySuccess": {
-						_: '%d líneas copiadas',
-						1: '1 línea copiada'
-					}
-				}
-			},
-			"bDestroy": true,
-			"iDisplayLength": 5,//Paginación
-			"order": [[0, "desc"]]//Ordenar (columna,orden)
-		}).DataTable();
+	tabla = $('#tbllistado').dataTable(	{
+		lengthMenu: [[ -1, 5, 10, 25, 75, 100, 200,], ["Todos", 5, 10, 25, 75, 100, 200, ]], //mostramos el menú de registros a revisar
+		"aProcessing": true,//Activamos el procesamiento del datatables
+		"aServerSide": true,//Paginación y filtrado realizados por el servidor
+		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
+		buttons: [
+			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla.ajax.reload(null, false); } },
+			{ extend: 'copyHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-copy fa-lg" data-toggle="tooltip" data-placement="top" title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
+			{ extend: 'excelHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-excel-o fa-lg" data-toggle="tooltip" data-placement="top" title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
+			{ extend: 'pdfHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-pdf-o fa-lg" data-toggle="tooltip" data-placement="top" title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
+			{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },
+		],
+		"ajax":		{
+			url: '../ajax/ingreso.php?op=listar',
+			type: "get",
+			dataType: "json",
+			error: function (e) {
+				console.log(e.responseText);
+			}
+		},
+		language: {
+			lengthMenu: "Mostrar: _MENU_ registros",
+			buttons: { copyTitle: "Tabla Copiada", copySuccess: { _: "%d líneas copiadas", 1: "1 línea copiada", }, },
+			sLoadingRecords: '<i class="fas fa-spinner fa-pulse fa-lg"></i> Cargando datos...'
+		},
+		"bDestroy": true,
+		"iDisplayLength": 10,//Paginación
+		"order": [[0, "desc"]],//Ordenar (columna,orden)
+		columnDefs: [
+      { targets: [1], render: $.fn.dataTable.render.moment('YYYY-MM-DD', 'DD/MM/YYYY'), },
+      // { targets: [4],  visible: false,  searchable: false,  },
+    ],
+	}).DataTable();
 }
 
 
 //Función ListarArticulos
 function listarArticulos() {
-	tabla = $('#tblarticulos').dataTable(
-		{
-			"aProcessing": true,//Activamos el procesamiento del datatables
-			"aServerSide": true,//Paginación y filtrado realizados por el servidor
-			dom: 'Bfrtip',//Definimos los elementos del control de tabla
-			buttons: [
-
-			],
-			"ajax":
-			{
-				url: '../ajax/ingreso.php?op=listarArticulos',
-				type: "get",
-				dataType: "json",
-				error: function (e) {
-					console.log(e.responseText);
-				}
-			},
-			"bDestroy": true,
-			"iDisplayLength": 5,//Paginación
-			"order": [[0, "desc"]]//Ordenar (columna,orden)
-		}).DataTable();
+	tabla = $('#tblarticulos').dataTable(	{
+		lengthMenu: [[ -1, 5, 10, 25, 75, 100, 200,], ["Todos", 5, 10, 25, 75, 100, 200, ]], //mostramos el menú de registros a revisar
+		"aProcessing": true,//Activamos el procesamiento del datatables
+		"aServerSide": true,//Paginación y filtrado realizados por el servidor
+		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
+		buttons: [{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },	],
+		"ajax":		{
+			url: '../ajax/ingreso.php?op=listarArticulos',
+			type: "get",
+			dataType: "json",
+			error: function (e) {
+				console.log(e.responseText);
+			}
+		},
+		language: {
+			lengthMenu: "Mostrar: _MENU_ registros",
+			buttons: { copyTitle: "Tabla Copiada", copySuccess: { _: "%d líneas copiadas", 1: "1 línea copiada", }, },
+			sLoadingRecords: '<i class="fas fa-spinner fa-pulse fa-lg"></i> Cargando datos...'
+		},
+		"bDestroy": true,
+		"iDisplayLength": 5,//Paginación
+		"order": [[0, "desc"]],//Ordenar (columna,orden)
+		columnDefs: [      
+      { targets: [4],  visible: false,  searchable: false,  },
+    ],
+	}).DataTable();
 }
 //Función para guardar o editar
 
@@ -212,28 +215,65 @@ function marcarImpuesto() {
 	}
 }
 
-function agregarDetalle(idarticulo, articulo) {
+function agregarDetalle(idarticulo, img) {
+	$(`.btn-add-pr-${idarticulo}`).html(`<i class="fa fa-fw fa-spinner fa-pulse"></i>`);
 	var cantidad = 1;
 	var precio_compra = 1;
 	var precio_venta = 1;
 
 	if (idarticulo != "") {
-		var subtotal = cantidad * precio_compra;
-		var fila = `<tr class="filas" id="fila${cont}">
-			<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(${cont})">X</button></td>
-			<td><input type="hidden" name="idarticulo[]" value="${idarticulo}">${articulo}</td>
-			<td><input type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" onkeyup="modificarSubototales();"></td>
-			<td><input type="number" name="precio_compra[]" id="precio_compra[]" value="${precio_compra}" onkeyup="modificarSubototales();"></td>
-			<td><input type="number" name="precio_venta[]" value="${precio_venta}" onkeyup="modificarSubototales();"></td>
-			<td><span name="subtotal" id="subtotal${cont}">${subtotal}</span></td>
-			<td><button type="button" onclick="modificarSubototales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>
-			</tr>`;
-		cont++;
-		detalles = detalles + 1;
-		$('#detalles').append(fila);
-		modificarSubototales();
-	}
-	else {
+		if ($(`#fila_${idarticulo}`).hasClass("producto_selecionado")) {
+			var cant_producto = $(`.cantidad_${idarticulo}`).val(); 
+			sub_total = parseInt(cant_producto, 10) + 1;
+			$(`.cantidad_${idarticulo}`).val(sub_total);
+			modificarSubototales();
+			$(`.btn-add-pr-${idarticulo}`).html(`<span class="fa fa-plus"></span>`);
+		} else {
+			
+			$.post("../ajax/ingreso.php?op=optener_producto_compra", { idarticulo: idarticulo }, function (e) {
+				e = JSON.parse(e); console.log(e);
+				var subtotal = cantidad * precio_compra;
+				var fila = `<tr class="filas producto_selecionado" id="fila_${idarticulo}">
+					<td>
+						<button type="button" class="btn btn-danger" onclick="eliminarDetalle(${idarticulo})">X</button> 
+						<button type="button" class="btn btn-info btn-show-op-${idarticulo}" onclick="ver_mas_opciones(${idarticulo}, 'show')"><i class="fa fa-fw fa-gear"></i></button>
+						<button type="button" class="btn btn-info btn-hide-op-${idarticulo}" onclick="ver_mas_opciones(${idarticulo}, 'hide' )" style="display: none !important;"><i class="fa fa-fw fa-cogs"></i></button>
+					</td>
+					<td>
+						<div class="user-block">
+							<img class="img-circle" src="../files/articulos/${img}" alt="User Image">
+							<span class="username"><a href="#">${e.data.producto.nombre}</a></span>				 
+							<div class="description">
+								<select name="unidad_medida[]" id="unidad_medida_${idarticulo}" class="form-control-sm " required="" onchange="calcular_segun_um(${idarticulo})">
+									${e.data.um.um_html_option}
+								</select>			
+							</div>
+						</div>
+						<input type="hidden" name="idarticulo[]" value="${idarticulo}">
+					</td>
+					<td><input class="cantidad_${idarticulo}" type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+					<td><input type="number" name="precio_compra[]" class="precio_compra_${idarticulo}" value="${precio_compra}" step="0.0001" min="0" onkeyup="modificarSubototales(); calcular_precio_x_unidad(${idarticulo});"></td>
+					<td><input type="number" name="precio_venta[]" value="${precio_venta}" step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
+					<td>
+						<span name="subtotal" id="subtotal${cont}">${subtotal}</span>
+						<input type="hidden" name="subtotal_pr[]" id="subtotal_pr_${cont}" value="${subtotal}">
+					</td>
+					<td><button type="button" onclick="modificarSubototales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>
+				</tr>
+				<tr class="filas fila_${idarticulo}" style="display: none;">
+					<td  colspan="6" > 
+						Cantidad por <span class="name-um-${idarticulo}">unidad</span>: <input type="number" name="cantidad_x_um[]" class="cantidad_x_um_${idarticulo}" step="0.0001" min="0" value="0" onkeyup="calcular_precio_x_unidad(${idarticulo});" onchange="calcular_precio_x_unidad(${idarticulo})" >  &nbsp; &nbsp;
+						Precio por unidad: <input type="number" name="precio_x_um[]" class="precio_x_um_${idarticulo}" step="0.0001" min="0" value="0" readonly > 
+					</td>
+				</tr>`;
+				cont++;
+				detalles = detalles + 1;
+				$('#detalles').append(fila);
+				modificarSubototales();
+				$(`.btn-add-pr-${idarticulo}`).html(`<span class="fa fa-plus"></span>`);
+			});			
+		}
+	}	else {
 		alert("Error al ingresar el detalle, revisar los datos del artículo");
 	}
 }
@@ -249,38 +289,57 @@ function modificarSubototales() {
 		var inpS = sub[i];
 
 		inpS.value = inpC.value * inpP.value;
-		document.getElementsByName("subtotal")[i].innerHTML = inpS.value;
+		var sub_total = (inpC.value * inpP.value);
+		document.getElementsByName("subtotal")[i].innerHTML = redondearExp(inpS.value, 2);
+		$(`#subtotal_pr_${i}`).val(sub_total);
 	}
 	calcularTotales();
-
 }
+
 function calcularTotales() {
 	var sub = document.getElementsByName("subtotal");
 	var total = 0.0;
 
-	for (var i = 0; i < sub.length; i++) {
-		total += document.getElementsByName("subtotal")[i].value;
-	}
-	$("#total").html("S/. " + total);
-	$("#total_compra").val(total);
+	for (var i = 0; i < sub.length; i++) {	total += document.getElementsByName("subtotal")[i].value;	}
+	$("#total").html("S/. " + formato_miles(total));
+	$("#total_compra").val(redondearExp(total, 2));
 	evaluar();
 }
 
 function evaluar() {
-	if (detalles > 0) {
-		$("#btnGuardar").show();
-	}
-	else {
-		$("#btnGuardar").hide();
-		cont = 0;
-	}
+	if (detalles > 0) {	$("#btnGuardar").show();}	else { $("#btnGuardar").hide();	cont = 0;	}
 }
 
-function eliminarDetalle(indice) {
-	$("#fila" + indice).remove();
+function eliminarDetalle(id) {
+	$(`#fila_${id}`).remove();
+	$(`.fila_${id}`).remove();
 	calcularTotales();
 	detalles = detalles - 1;
 	evaluar();
 }
 
 init();
+
+function ver_mas_opciones(id, op) {
+	if (op == 'show') {
+		$(`.fila_${id}`).show();
+		$(`.btn-show-op-${id}`).hide();
+		$(`.btn-hide-op-${id}`).show();
+	} else if (op == 'hide') {
+		$(`.fila_${id}`).hide();
+		$(`.btn-show-op-${id}`).show();
+		$(`.btn-hide-op-${id}`).hide();
+	}	
+}
+
+function calcular_segun_um(id) {
+	var nombre_um = $(`#unidad_medida_${id} option:selected`).text();
+	$(`.name-um-${id}`).html(nombre_um);
+}
+
+function calcular_precio_x_unidad(id) {	
+	var cantidad = $(`.cantidad_x_um_${id}`).val() == ''  || $(`.cantidad_x_um_${id}`).val() == null ? 0 : parseFloat($(`.cantidad_x_um_${id}`).val()) ;
+	var precio_compra = $(`.precio_compra_${id}`).val() == '' || $(`.precio_compra_${id}`).val() == null ? 0 : parseFloat($(`.precio_compra_${id}`).val()) ;
+	// console.log(cantidad); console.log(precio_compra);
+	$(`.precio_x_um_${id}`).val(redondearExp(precio_compra/cantidad, 2));
+}

@@ -70,7 +70,7 @@ function listar() {
 			dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
 			buttons: [
 				'copyHtml5','excelHtml5',	'csvHtml5',	'pdf'
-				// { text: '<i class="fa-solid fa-arrows-rotate" data-toggle="tooltip" data-original-title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_venta.ajax.reload(); } },
+				// { text: '<i class="fa-solid fa-arrows-rotate" data-toggle="tooltip" data-original-title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_venta.ajax.reload(null, false); } },
 				// { extend: 'copyHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-copy" data-toggle="tooltip" data-original-title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
 				// { extend: 'excelHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-file-excel fa-lg" data-toggle="tooltip" data-original-title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
 				// { extend: 'pdfHtml5', exportOptions: { columns: [1,2,3,4,5,6,7], }, text: `<i class="fa fa-file-pdf fa-lg" data-toggle="tooltip" data-original-title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
@@ -220,7 +220,7 @@ function agregarDetalle(idarticulo, articulo, precio_venta, precio_compra) {
 		var fila = `<tr class="filas" id="fila${cont}">
 			<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(${cont})">X</button></td>
 			<td><input type="hidden" name="idarticulo[]" value="${idarticulo}">${articulo}</td>
-			<td><input type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" onkeyup="modificarSubototales();"></td>
+			<td><input type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
 			<td>
 				<input type="number" name="precio_venta[]" id="precio_venta[]" value="${precio_venta}" step="0.0001" min="0" onkeyup="modificarSubototales();">
 				<input type="hidden" name="precio_compra[]" id="precio_compra[]" value="${precio_compra}" step="0.0001" min="0">

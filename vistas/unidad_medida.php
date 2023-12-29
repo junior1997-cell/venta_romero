@@ -19,7 +19,10 @@ if (!isset($_SESSION["nombre"])) {
           <div class="col-md-12">
             <div class="box">
               <div class="box-header with-border">
-                <h1 class="box-title">Categoría <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptcategorias.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
+                <h1 class="box-title">Unidad de medida 
+                  <!-- <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true)"><i class="fa fa-plus-circle"></i> Agregar</button>  -->
+                  <!-- <a href="../reportes/rptcategorias.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a> -->
+                </h1>
                 <div class="box-tools pull-right">
                 </div>
               </div>
@@ -30,7 +33,8 @@ if (!isset($_SESSION["nombre"])) {
                   <thead>
                     <th>Opciones</th>
                     <th>Nombre</th>
-                    <th>Descripción</th>
+                    <th>Abreviatura</th>
+                    <th>Equivalencia</th>
                     <th>Estado</th>
                   </thead>
                   <tbody>
@@ -38,12 +42,13 @@ if (!isset($_SESSION["nombre"])) {
                   <tfoot>
                     <th>Opciones</th>
                     <th>Nombre</th>
-                    <th>Descripción</th>
+                    <th>Abreviatura</th>
+                    <th>Equivalencia</th>
                     <th>Estado</th>
                   </tfoot>
                 </table>
               </div>
-              <div class="panel-body" style="height: 400px;" id="formularioregistros">
+              <div class="panel-body" style="height: 400px; display: none !important;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Nombre:</label>
@@ -76,7 +81,8 @@ if (!isset($_SESSION["nombre"])) {
 
   require 'footer.php';
   ?>
-  <script type="text/javascript" src="scripts/categoria.js"></script>
+  <script type="text/javascript" src="scripts/unidad_medida.js"></script>
+  <script> $(function () { $('[data-toggle="tooltip"]').tooltip(); }); </script>
 <?php
 }
 ob_end_flush();

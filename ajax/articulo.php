@@ -12,6 +12,10 @@ if (!isset($_SESSION["nombre"])) {
 
 		$articulo = new Articulo();
 
+		date_default_timezone_set('America/Lima'); $date_now = date("d_m_Y__h_i_s_A");
+    $imagen_error = "this.src='../dist/svg/404-v2.svg'";
+    $toltip = '<script> $(function () { $(\'[data-toggle="tooltip"]\').tooltip(); }); </script>';
+
 		$idarticulo 	= isset($_POST["idarticulo"]) ? limpiarCadena($_POST["idarticulo"]) : "";
 		$idcategoria 	= isset($_POST["idcategoria"]) ? limpiarCadena($_POST["idcategoria"]) : "";
 		$codigo 			= isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";		
@@ -29,11 +33,9 @@ if (!isset($_SESSION["nombre"])) {
 				if (!file_exists($_FILES['imagen']['tmp_name']) || !is_uploaded_file($_FILES['imagen']['tmp_name'])) {
 					$imagen = $_POST["imagenactual"];
 				} else {
-					$ext = explode(".", $_FILES["imagen"]["name"]);
-					if ($_FILES['imagen']['type'] == "image/jpg" || $_FILES['imagen']['type'] == "image/jpeg" || $_FILES['imagen']['type'] == "image/png") {
-						$imagen = round(microtime(true)) . '.' . end($ext);
-						move_uploaded_file($_FILES["imagen"]["tmp_name"], "../files/articulos/" . $imagen);
-					}
+					$ext = explode(".", $_FILES["imagen"]["name"]);					
+					$imagen = $date_now .'__'. random_int(0, 20) . round(microtime(true)) . random_int(21, 41) . '.' . end($ext);
+					move_uploaded_file($_FILES["imagen"]["tmp_name"], "../files/articulos/" . $imagen);					
 				}
 				if (empty($idarticulo)) {
 					$rspta = $articulo->insertar($idcategoria, $codigo, $nombre, $stock, $descripcion, $imagen, round($precio_compra, 2), round($precio_venta, 2));
@@ -66,21 +68,29 @@ if (!isset($_SESSION["nombre"])) {
 				$data = array();
 
 				while ($reg = $rspta->fetch_object()) {
+					$img_parametro = "producto-sin-foto.svg"; $img = "";  $clas_stok = "";
+  
+					if (empty($reg->imagen)) {
+						$img = '../files/articulos/producto-sin-foto.svg';
+					} else {
+						$img = '../files/articulos/' . $reg->imagen;
+						$img_parametro = $reg->imagen;
+					}
+
 					$data[] = array(
-						"0" => ($reg->condicion) ? '<button class="btn btn-warning" onclick="mostrar(' . $reg->idarticulo . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-danger" onclick="desactivar(' . $reg->idarticulo . ')"><i class="fa fa-close"></i></button>' :
-							'<button class="btn btn-warning" onclick="mostrar(' . $reg->idarticulo . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-primary" onclick="activar(' . $reg->idarticulo . ')"><i class="fa fa-check"></i></button>',
+						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idarticulo . ')" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>' .
+						($reg->condicion ? ' <button class="btn btn-danger btn-sm" onclick="desactivar(' . $reg->idarticulo . ')" data-toggle="tooltip" data-placement="top" title="Desactivar"><i class="fa fa-close"></i></button>' :
+							' <button class="btn btn-primary btn-sm" onclick="activar(' . $reg->idarticulo . ')" data-toggle="tooltip" data-placement="top" title="Activar"><i class="fa fa-check"></i></button>'),
 						"1" =>  '<div class="user-block">
-						<img class="img-circle" src="../files/articulos/' . $reg->imagen . '" alt="User Image">
-						<span class="username"><a href="#">'.$reg->nombre.'</a></span>
-						<span class="description"><b>Categoria: </b>'.$reg->categoria.'</span>
+							<img class="img-circle" src="' . $img . '" alt="User Image">
+							<span class="username"><a href="#">'.$reg->nombre.'</a></span>
+							<span class="description"><b>Categoria: </b>'.$reg->categoria.'</span>
 						</div>',
 						"2" => $reg->codigo,
 						"3" => $reg->stock,
 						"4" => $reg->precio_compra,
 						"5" => $reg->precio_venta,
-						"6" => ($reg->condicion) ? '<span class="label bg-green">Activado</span>' :	'<span class="label bg-red">Desactivado</span>'
+						"6" => (($reg->condicion) ? '<span class="label bg-green">Activado</span>' :	'<span class="label bg-red">Desactivado</span>') . $toltip
 					);
 				}
 				$results = array(

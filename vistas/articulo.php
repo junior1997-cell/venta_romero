@@ -25,7 +25,7 @@ if (!isset($_SESSION["nombre"])) {
               <!-- /.box-header -->
               <!-- centro -->
               <div class="panel-body table-responsive" id="listadoregistros" >
-                <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover">
+                <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover" style="width: 100% !important;">
                   <thead>
                     <th>Opciones</th>
                     <th>Nombre</th>
@@ -79,7 +79,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Imagen:</label>
-                    <input type="file" class="form-control" name="imagen" id="imagen" accept="image/x-png,image/gif,image/jpeg">
+                    <input type="file" class="form-control" name="imagen" id="imagen" accept="image/*">
                     <input type="hidden" name="imagenactual" id="imagenactual">
                     <img src="" width="150px" height="120px" id="imagenmuestra">
                   </div>

@@ -5,31 +5,18 @@ function init() {
 	mostrarform(false);
 	listar();
 
-	$("#formulario").on("submit", function (e) {guardaryeditar(e);	})
-
-	//Cargamos los items al select categoria
-	$.post("../ajax/articulo.php?op=selectCategoria", function (r) {$("#idcategoria").html(r); $('#idcategoria').selectpicker('refresh');});
-	$("#imagenmuestra").hide();
+	$("#formulario").on("submit", function (e) {
+		guardaryeditar(e);
+	});
 	$('#mAlmacen').addClass("treeview active");
-	$('#lArticulos').addClass("active");
+	$('#lUnidad_medida').addClass("active");
 }
 
 //Función limpiar
 function limpiar() {
-	
+	$("#idunida_medida").val("");
 	$("#nombre").val("");
 	$("#descripcion").val("");
-	$("#stock").val("");		
-	$("#idarticulo").val("");
-	$("#precio_compra").val("");
-	$("#precio_venta").val("");
-
-	$("#codigo").val("");
-	$("#print").hide();
-
-	$("#imagenmuestra").attr("src", "").hide();
-	$("#imagenactual").val("");
-	$("#imagen").val("");
 }
 
 //Función mostrar formulario
@@ -63,14 +50,13 @@ function listar() {
 		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
 		buttons: [
 			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla.ajax.reload(null, false); } },
-			{ extend: 'copyHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-copy fa-lg" data-toggle="tooltip" data-placement="top" title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
-			{ extend: 'excelHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-excel-o fa-lg" data-toggle="tooltip" data-placement="top" title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
-			{ extend: 'pdfHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-pdf-o fa-lg" data-toggle="tooltip" data-placement="top" title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
+			{ extend: 'copyHtml5', exportOptions: { columns: [1,2,3], }, text: `<i class="fa fa-copy fa-lg" data-toggle="tooltip" data-placement="top" title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
+			{ extend: 'excelHtml5', exportOptions: { columns: [1,2,3], }, text: `<i class="fa fa-fw fa-file-excel-o fa-lg" data-toggle="tooltip" data-placement="top" title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
+			{ extend: 'pdfHtml5', exportOptions: { columns: [1,2,3], }, text: `<i class="fa fa-fw fa-file-pdf-o fa-lg" data-toggle="tooltip" data-placement="top" title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
 			{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },
 		],
-		"ajax":
-		{
-			url: '../ajax/articulo.php?op=listar',
+		"ajax":	{
+			url: '../ajax/unidad_medida.php?op=listar',
 			type: "get",
 			dataType: "json",
 			error: function (e) {
@@ -95,12 +81,11 @@ function guardaryeditar(e) {
 	var formData = new FormData($("#formulario")[0]);
 
 	$.ajax({
-		url: "../ajax/articulo.php?op=guardaryeditar",
+		url: "../ajax/unidad_medida.php?op=guardaryeditar",
 		type: "POST",
 		data: formData,
 		contentType: false,
 		processData: false,
-
 		success: function (datos) {
 			bootbox.alert(datos);
 			mostrarform(false);
@@ -111,35 +96,23 @@ function guardaryeditar(e) {
 	limpiar();
 }
 
-function mostrar(idarticulo) {
-	$.post("../ajax/articulo.php?op=mostrar", { idarticulo: idarticulo }, function (data, status) {
+function mostrar(idunida_medida) {
+	$.post("../ajax/unidad_medida.php?op=mostrar", { idunida_medida: idunida_medida }, function (data, status) {
 		data = JSON.parse(data);
 		mostrarform(true);
 
-		$("#idcategoria").val(data.idcategoria);
-		$('#idcategoria').selectpicker('refresh');
-		$("#codigo").val(data.codigo);
 		$("#nombre").val(data.nombre);
-		$("#stock").val(data.stock);
 		$("#descripcion").val(data.descripcion);
-		$("#imagenmuestra").show();
-		$("#imagenmuestra").attr("src", "../files/articulos/" + data.imagen);
-		$("#imagenactual").val(data.imagen);
-		$("#idarticulo").val(data.idarticulo);
-
-		$("#precio_compra").val(data.precio_compra);
-		$("#precio_venta").val(data.precio_venta);
-
-		generarbarcode();
+		$("#idunida_medida").val(data.idunida_medida);
 
 	})
 }
 
 //Función para desactivar registros
-function desactivar(idarticulo) {
-	bootbox.confirm("¿Está Seguro de desactivar el artículo?", function (result) {
+function desactivar(idunida_medida) {
+	bootbox.confirm("¿Está Seguro de desactivar la Unidad de medida?", function (result) {
 		if (result) {
-			$.post("../ajax/articulo.php?op=desactivar", { idarticulo: idarticulo }, function (e) {
+			$.post("../ajax/unidad_medida.php?op=desactivar", { idunida_medida: idunida_medida }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload(null, false);
 			});
@@ -148,10 +121,10 @@ function desactivar(idarticulo) {
 }
 
 //Función para activar registros
-function activar(idarticulo) {
-	bootbox.confirm("¿Está Seguro de activar el Artículo?", function (result) {
+function activar(idunida_medida) {
+	bootbox.confirm("¿Está Seguro de activar la Unidad de medida?", function (result) {
 		if (result) {
-			$.post("../ajax/articulo.php?op=activar", { idarticulo: idarticulo }, function (e) {
+			$.post("../ajax/unidad_medida.php?op=activar", { idunida_medida: idunida_medida }, function (e) {
 				bootbox.alert(e);
 				tabla.ajax.reload(null, false);
 			});
@@ -159,16 +132,5 @@ function activar(idarticulo) {
 	})
 }
 
-//función para generar el código de barras
-function generarbarcode() {
-	codigo = $("#codigo").val();
-	JsBarcode("#barcode", codigo);
-	$("#print").show();
-}
-
-//Función para imprimir el Código de barras
-function imprimir() {
-	$("#print").printArea();
-}
 
 init();

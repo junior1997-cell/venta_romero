@@ -12,6 +12,10 @@ if (!isset($_SESSION["nombre"])) {
 
 		$venta = new Venta();
 
+		date_default_timezone_set('America/Lima'); $date_now = date("d_m_Y__h_i_s_A");
+    $imagen_error = "this.src='../dist/svg/404-v2.svg'";
+    $toltip = '<script> $(function () { $(\'[data-toggle="tooltip"]\').tooltip(); }); </script>';
+
 		$idventa 						= isset($_POST["idventa"]) ? limpiarCadena($_POST["idventa"]) : "";
 		$idcliente 					= isset($_POST["idcliente"]) ? limpiarCadena($_POST["idcliente"]) : "";
 		$idusuario 					= $_SESSION["idusuario"];

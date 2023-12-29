@@ -256,8 +256,8 @@ function modificarSubototales() {
 
 		inpS.value = (inpC.value * inpP.value) - inpD.value;
 		var sub_total = (inpC.value * inpP.value) - inpD.value;
-		document.getElementsByName("subtotal")[i].innerHTML = inpS.value;		
-		$(`#subtotal_pr_${i}`).val(sub_total);
+		document.getElementsByName("subtotal")[i].innerHTML =  formato_miles(inpS.value);		
+		$(`#subtotal_pr_${i}`).val( redondearExp(sub_total));
 	}
 	calcularTotales();
 
@@ -269,16 +269,15 @@ function calcularTotales() {
 	for (var i = 0; i < sub.length; i++) {
 		total += document.getElementsByName("subtotal")[i].value;
 	}
-	$("#total").html("S/. " + total);
-	$("#total_venta").val(total);
+	$("#total").html("S/. " +  formato_miles(total) );
+	$("#total_venta").val( redondearExp(total) );
 	evaluar();
 }
 
 function evaluar() {
 	if (detalles > 0) {
 		$("#btnGuardar").show();
-	}
-	else {
+	}	else {
 		$("#btnGuardar").hide();
 		cont = 0;
 	}

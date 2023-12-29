@@ -290,8 +290,8 @@ function modificarSubototales() {
 
 		inpS.value = inpC.value * inpP.value;
 		var sub_total = (inpC.value * inpP.value);
-		document.getElementsByName("subtotal")[i].innerHTML = redondearExp(inpS.value, 2);
-		$(`#subtotal_pr_${i}`).val(sub_total);
+		document.getElementsByName("subtotal")[i].innerHTML = formato_miles(inpS.value);
+		$(`#subtotal_pr_${i}`).val( redondearExp(sub_total, 2));
 	}
 	calcularTotales();
 }

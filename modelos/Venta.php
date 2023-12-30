@@ -40,11 +40,18 @@ Class Venta
 
 		return $sw;
 	}
-
 	
 	//Implementamos un método para anular la venta
-	public function anular($idventa)
-	{
+	public function anular($idventa)	{
+		$sql_0="SELECT * FROM detalle_venta WHERE idventa ";
+		$detalle = ejecutarConsultaArray($sql_0);
+
+		foreach ($detalle as $key => $val) {
+			// Reducimos el STOCK
+			$sql_producto = "UPDATE articulo SET stock = stock + '".$val['cantidad']."' WHERE idarticulo = '".$val['idarticulo']."'";
+			ejecutarConsulta($sql_producto);
+		}
+		
 		$sql="UPDATE venta SET estado='Anulado' WHERE idventa='$idventa'";
 		return ejecutarConsulta($sql);
 	}

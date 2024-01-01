@@ -61,7 +61,7 @@ if (!isset($_SESSION["nombre"])) {
     <table border="0" align="center" width="230px">
       <tbody>
         <tr>
-          <td align="center"><img src="../public/img/apple-touch-icon.png" width="100"></td>
+          <td align="center"><img src="../public/img/logo-romero.jpg" width="100"></td>
         </tr>
         <tr align="center">
           <td style="font-size: 14px">.::<strong> <?php echo mb_convert_encoding(htmlspecialchars_decode($empresa),"UTF-8", mb_detect_encoding($empresa)) ?> </strong>::.</td>

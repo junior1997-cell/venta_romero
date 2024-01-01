@@ -150,8 +150,7 @@ if (!isset($_SESSION["nombre"])) {
       // user data
       $errorCorrectionLevel = 'H';
       $matrixPointSize = '2';
-      $filename = $datos['data']['persona']['serie_comprobante'] .'-'.$datos['data']['persona']['num_comprobante'].'__'
-       . $date_now .'__'. random_int(0, 20) . round(microtime(true)) . random_int(21, 41) . '.'  . '.png';
+      $filename = $datos['data']['persona']['serie_comprobante'] .'-'.$datos['data']['persona']['num_comprobante']. '.png';
 
       $qr_code = QrCode::create($dataTxt)
       ->setEncoding(new Encoding('UTF-8'))

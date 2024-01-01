@@ -66,7 +66,7 @@ function listar() {
 		language: {
 			lengthMenu: "Mostrar: _MENU_ registros",
 			buttons: { copyTitle: "Tabla Copiada", copySuccess: { _: "%d líneas copiadas", 1: "1 línea copiada", }, },
-			sLoadingRecords: '<i class="fas fa-spinner fa-pulse fa-lg"></i> Cargando datos...'
+			sLoadingRecords: '<i class="fa fa-fw fa-spinner fa-pulse"></i> Cargando datos...'
 		},
 		"bDestroy": true,
 		"iDisplayLength": 10,//Paginación

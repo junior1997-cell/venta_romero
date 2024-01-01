@@ -80,9 +80,12 @@ Class Ingreso
 		] ;
 	}
 
-	public function listarDetalle($idingreso)
-	{
-		$sql="SELECT di.idingreso,di.idarticulo,a.nombre,di.cantidad,di.precio_compra,di.precio_venta FROM detalle_ingreso di inner join articulo a on di.idarticulo=a.idarticulo where di.idingreso='$idingreso'";
+	public function listarDetalle($idingreso)	{
+		$sql="SELECT di.*, a.nombre as articulo, a.imagen, um.nombre as um
+		FROM detalle_ingreso di 
+		inner join articulo a on di.idarticulo=a.idarticulo 
+		inner join unida_medida um on um.idunida_medida=di.idunida_medida 
+		where di.idingreso='$idingreso'";
 		return ejecutarConsulta($sql);
 	}
 

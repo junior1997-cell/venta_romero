@@ -11,6 +11,11 @@
     <!-- AdminLTE App -->
     <script src="../public/js/app.min.js"></script>
 
+    <!-- Select2 -->
+    <script src="../public/select2/js/select2.full.min.js"></script>
+    <!-- Toastr -->
+    <script src="../public/toastr/toastr.min.js"></script>
+
     <!-- Moment -->
     <script src="../public/moment/moment.min.js"></script>
     <script src="../public/moment/locale/es-mx.js"></script>
@@ -29,5 +34,6 @@
     <script src="../public/js/bootstrap-select.min.js"></script>
 
     <script src="../public/js/funcion_general.js"></script>
+    <script src="../public/js/funcion_crud.js"></script>
   </body>
 </html>

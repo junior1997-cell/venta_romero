@@ -70,25 +70,34 @@ if (!isset($_SESSION["nombre"])) {
 				$rspta = $ingreso->listarDetalle($id);
 				$total = 0;
 				echo '<thead style="background-color:#A9D0F5">
-						<th>Opciones</th>
-						<th>Artículo</th>
-						<th>Cantidad</th>
-						<th>Precio Compra</th>
-						<th>Precio Venta</th>
-						<th>Subtotal</th>
+					<th>Opciones</th><th>Artículo</th><th>Cantidad</th><th>Precio Compra</th><th>Precio Venta</th><th>Subtotal</th>
 				</thead>';
 
 				while ($reg = $rspta->fetch_object()) {
-					echo '<tr class="filas"><td></td><td>' . $reg->nombre . '</td><td>' . $reg->cantidad . '</td><td>' . $reg->precio_compra . '</td><td>' . $reg->precio_venta . '</td><td>' . $reg->precio_compra * $reg->cantidad . '</td></tr>';
+					$img = (empty($reg->imagen) ? $img = '../files/articulos/producto-sin-foto.svg' : $img = '../files/articulos/' . $reg->imagen );
+					echo '<tr class="filas">
+						<td>
+							<button type="button" class="btn btn-info btn-show-op-' . $reg->idarticulo . '" onclick="ver_mas_opciones(' . $reg->idarticulo . ', \'show\')"><i class="fa fa-fw fa-gear"></i></button>
+							<button type="button" class="btn btn-info btn-hide-op-' . $reg->idarticulo . '" onclick="ver_mas_opciones(' . $reg->idarticulo . ', \'hide\' )" style="display: none !important;"><i class="fa fa-fw fa-cogs"></i></button>
+						</td>
+						<td>
+							<div class="user-block">
+								<img class="img-circle" src="' . $img . '" alt="User Image">
+								<span class="username"><a href="#">' . $reg->articulo . '</a></span>				 
+								<div class="description">	' . $reg->um . '	</div>
+							</div>
+						</td>
+						<td>' . $reg->cantidad . '</td>
+						<td>' . $reg->precio_compra . '</td><td>' . $reg->precio_venta . '</td> 
+						<td>' . $reg->precio_compra * $reg->cantidad . '</td>
+					</tr>
+					<tr class="filas fila_' . $reg->idarticulo . '" style="display: none;">
+						<td  colspan="6" > 	Cantidad por ' . $reg->um . ': ' . $reg->cantidad_x_um . ' &nbsp; &nbsp; Precio por unidad: ' . $reg->precio_x_um . ' </td>
+					</tr>';
 					$total = $total + ($reg->precio_compra * $reg->cantidad);
 				}
-				echo '<tfoot>
-						<th>TOTAL</th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th><h4 id="total">S/.' . $total . '</h4><input type="hidden" name="total_compra" id="total_compra"></th> 
+				echo '<tfoot>						
+						<th></th><th></th><th></th><th></th><th>TOTAL</th><th><h4 id="total">S/.' . $total . '</h4>
 				</tfoot>';
 			break;
 
@@ -108,8 +117,7 @@ if (!isset($_SESSION["nombre"])) {
 						"4" => $reg->tipo_comprobante,
 						"5" => $reg->serie_comprobante . '-' . $reg->num_comprobante,
 						"6" => $reg->total_compra,
-						"7" => ($reg->estado == 'Aceptado') ? '<span class="label bg-green">Aceptado</span>' :
-							'<span class="label bg-red">Anulado</span>'
+						"7" => ($reg->estado == 'Aceptado') ? '<span class="label bg-green">Aceptado</span>' :'<span class="label bg-red">Anulado</span>'
 					);
 				}
 				$results = array(

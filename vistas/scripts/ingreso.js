@@ -1,4 +1,5 @@
-var tabla;
+var tabla_articulo;
+var tabla_ingreso;
 
 //Función que se ejecuta al inicio
 function init() {
@@ -69,13 +70,13 @@ function cancelarform() {
 
 //Función Listar
 function listar() {
-	tabla = $('#tbllistado').dataTable(	{
+	tabla_ingreso = $('#tbllistado').dataTable(	{
 		lengthMenu: [[ -1, 5, 10, 25, 75, 100, 200,], ["Todos", 5, 10, 25, 75, 100, 200, ]], //mostramos el menú de registros a revisar
 		"aProcessing": true,//Activamos el procesamiento del datatables
 		"aServerSide": true,//Paginación y filtrado realizados por el servidor
 		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
 		buttons: [
-			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla.ajax.reload(null, false); } },
+			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_ingreso.ajax.reload(null, false); } },
 			{ extend: 'copyHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-copy fa-lg" data-toggle="tooltip" data-placement="top" title="Copiar"></i>`, className: "btn bg-gradient-gray", footer: true,  }, 
 			{ extend: 'excelHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-excel-o fa-lg" data-toggle="tooltip" data-placement="top" title="Excel"></i>`, className: "btn bg-gradient-success", footer: true,  }, 
 			{ extend: 'pdfHtml5', exportOptions: { columns: [1,2,3,4], }, text: `<i class="fa fa-fw fa-file-pdf-o fa-lg" data-toggle="tooltip" data-placement="top" title="PDF"></i>`, className: "btn bg-gradient-danger", footer: false, orientation: 'landscape', pageSize: 'LEGAL',  },
@@ -92,7 +93,7 @@ function listar() {
 		language: {
 			lengthMenu: "Mostrar: _MENU_ registros",
 			buttons: { copyTitle: "Tabla Copiada", copySuccess: { _: "%d líneas copiadas", 1: "1 línea copiada", }, },
-			sLoadingRecords: '<i class="fas fa-spinner fa-pulse fa-lg"></i> Cargando datos...'
+			sLoadingRecords: '<i class="fa fa-fw fa-spinner fa-pulse"></i> Cargando datos...'
 		},
 		"bDestroy": true,
 		"iDisplayLength": 10,//Paginación
@@ -107,7 +108,7 @@ function listar() {
 
 //Función ListarArticulos
 function listarArticulos() {
-	tabla = $('#tblarticulos').dataTable(	{
+	tabla_articulo = $('#tblarticulos').dataTable(	{
 		lengthMenu: [[ -1, 5, 10, 25, 75, 100, 200,], ["Todos", 5, 10, 25, 75, 100, 200, ]], //mostramos el menú de registros a revisar
 		"aProcessing": true,//Activamos el procesamiento del datatables
 		"aServerSide": true,//Paginación y filtrado realizados por el servidor
@@ -124,7 +125,7 @@ function listarArticulos() {
 		language: {
 			lengthMenu: "Mostrar: _MENU_ registros",
 			buttons: { copyTitle: "Tabla Copiada", copySuccess: { _: "%d líneas copiadas", 1: "1 línea copiada", }, },
-			sLoadingRecords: '<i class="fas fa-spinner fa-pulse fa-lg"></i> Cargando datos...'
+			sLoadingRecords: '<i class="fa fa-fw fa-spinner fa-pulse"></i> Cargando datos...'
 		},
 		"bDestroy": true,
 		"iDisplayLength": 5,//Paginación
@@ -147,11 +148,10 @@ function guardaryeditar(e) {
 		data: formData,
 		contentType: false,
 		processData: false,
-
 		success: function (datos) {
 			bootbox.alert(datos);
 			mostrarform(false);
-			listar();
+			tabla_ingreso.ajax.reload(null, false);
 		}
 
 	});
@@ -190,7 +190,7 @@ function anular(idingreso) {
 		if (result) {
 			$.post("../ajax/ingreso.php?op=anular", { idingreso: idingreso }, function (e) {
 				bootbox.alert(e);
-				tabla.ajax.reload(null, false);
+				tabla_ingreso.ajax.reload(null, false);
 			});
 		}
 	})

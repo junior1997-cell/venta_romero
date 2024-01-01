@@ -122,6 +122,9 @@ if (!isset($_SESSION["nombre"])) {
         </div><!-- /.row -->
       </section><!-- /.content -->
 
+      
+      
+
     </div><!-- /.content-wrapper -->
     <!--Fin-Contenido-->
   <?php

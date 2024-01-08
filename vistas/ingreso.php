@@ -96,11 +96,13 @@ if (!isset($_SESSION["nombre"])) {
                         <th>Opciones</th>
                         <th>Artículo</th>
                         <th>Cantidad</th>
-                        <th>Precio Compra</th>
+                        <th>Precio Caja</th>
+                        <th>Precio Unitario</th>
                         <th>Precio Venta</th>
                         <th>Subtotal</th>
                       </thead>
                       <tfoot>                        
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>

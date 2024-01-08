@@ -41,6 +41,7 @@ function limpiar() {
 
 //Función mostrar formulario
 function mostrarform(flag) {
+	array_class_compra = [];
 	//limpiar();
 	if (flag) {
 		$("#listadoregistros").hide();
@@ -53,8 +54,7 @@ function mostrarform(flag) {
 		$("#btnCancelar").show();
 		detalles = 0;
 		$("#btnAgregarArt").show();
-	}
-	else {
+	}	else {
 		$("#listadoregistros").show();
 		$("#formularioregistros").hide();
 		$("#btnagregar").show();
@@ -198,6 +198,7 @@ function anular(idingreso) {
 
 //Declaración de variables necesarias para trabajar con las compras y
 //sus detalles
+var array_class_compra = [];
 var impuesto = 18;
 var cont = 0;
 var detalles = 0;
@@ -231,13 +232,11 @@ function agregarDetalle(idarticulo, img) {
 		} else {
 			
 			$.post("../ajax/ingreso.php?op=optener_producto_compra", { idarticulo: idarticulo }, function (e) {
-				e = JSON.parse(e); console.log(e);
+				e = JSON.parse(e); //console.log(e);
 				var subtotal = cantidad * precio_compra;
 				var fila = `<tr class="filas producto_selecionado" id="fila_${idarticulo}">
 					<td>
-						<button type="button" class="btn btn-danger" onclick="eliminarDetalle(${idarticulo})">X</button> 
-						<button type="button" class="btn btn-info btn-show-op-${idarticulo}" onclick="ver_mas_opciones(${idarticulo}, 'show')"><i class="fa fa-fw fa-gear"></i></button>
-						<button type="button" class="btn btn-info btn-hide-op-${idarticulo}" onclick="ver_mas_opciones(${idarticulo}, 'hide' )" style="display: none !important;"><i class="fa fa-fw fa-cogs"></i></button>
+						<button type="button" class="btn btn-danger" onclick="eliminarDetalle(${cont}, ${idarticulo})">X</button>					
 					</td>
 					<td>
 						<div class="user-block">
@@ -251,26 +250,29 @@ function agregarDetalle(idarticulo, img) {
 						</div>
 						<input type="hidden" name="idarticulo[]" value="${idarticulo}">
 					</td>
-					<td><input class="cantidad_${idarticulo}" type="number" name="cantidad[]" id="cantidad[]" value="${cantidad}" step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
-					<td><input type="number" name="precio_compra[]" class="precio_compra_${idarticulo}" value="${precio_compra}" step="0.0001" min="0" onkeyup="modificarSubototales(); calcular_precio_x_unidad(${idarticulo});"></td>
-					<td><input type="number" name="precio_venta[]" value="${precio_venta}" step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
+					<td><input type="number" name="cantidad[]" 			class="cantidad_${cont}" 			value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+					<td><input type="number" name="precio_caja[]" 	class="precio_caja_${cont}" 	value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
 					<td>
-						<span name="subtotal" id="subtotal${cont}">${subtotal}</span>
-						<input type="hidden" name="subtotal_pr[]" id="subtotal_pr_${cont}" value="${subtotal}">
+						<span  class="precio_compra_${cont}">${precio_compra}</span>
+						<input type="hidden" name="precio_compra[]" class="precio_compra_${cont}" value="${precio_compra}" 	step="0.0001" min="0" onkeyup="modificarSubototales(); calcular_precio_x_unidad(${idarticulo});" readonly>
+					</td>
+					<td><input type="number" name="precio_venta[]" 	class="precio_venta_${cont}" 	value="${e.data.producto.precio_venta}" 	step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
+					<td>
+						<span name="subtotal" class="subtotal_${cont}">${subtotal}</span>
+						<input type="hidden" name="subtotal_pr[]" class="subtotal_${cont}" value="${subtotal}">
 					</td>
 					<td><button type="button" onclick="modificarSubototales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>
-				</tr>
-				<tr class="filas fila_${idarticulo}" style="display: none;">
-					<td  colspan="6" > 
-						Cantidad por <span class="name-um-${idarticulo}">unidad</span>: <input type="number" name="cantidad_x_um[]" class="cantidad_x_um_${idarticulo}" step="0.0001" min="0" value="0" onkeyup="calcular_precio_x_unidad(${idarticulo});" onchange="calcular_precio_x_unidad(${idarticulo})" >  &nbsp; &nbsp;
-						Precio por unidad: <input type="number" name="precio_x_um[]" class="precio_x_um_${idarticulo}" step="0.0001" min="0" value="0" readonly > 
-					</td>
 				</tr>`;
-				cont++;
+				
 				detalles = detalles + 1;
 				$('#detalles').append(fila);
+
+				array_class_compra.push({ id_cont: cont });
+
+				cont++;
 				modificarSubototales();
 				$(`.btn-add-pr-${idarticulo}`).html(`<span class="fa fa-plus"></span>`);
+				console.log(array_class_compra);
 			});			
 		}
 	}	else {
@@ -279,28 +281,41 @@ function agregarDetalle(idarticulo, img) {
 }
 
 function modificarSubototales() {
-	var cant = document.getElementsByName("cantidad[]");
-	var prec = document.getElementsByName("precio_compra[]");
-	var sub = document.getElementsByName("subtotal");
-
-	for (var i = 0; i < cant.length; i++) {
-		var inpC = cant[i];
-		var inpP = prec[i];
-		var inpS = sub[i];
-
-		inpS.value = inpC.value * inpP.value;
-		var sub_total = (inpC.value * inpP.value);
-		document.getElementsByName("subtotal")[i].innerHTML = formato_miles(inpS.value);
-		$(`#subtotal_pr_${i}`).val( redondearExp(sub_total, 2));
+	var val_igv = $('#impuesto').val(); //console.log(array_class_compra);
+	if (array_class_compra.length === 0) {
+	} else {
+		array_class_compra.forEach((val, key) => {
+			var cantidad 		= $(`.cantidad_${val.id_cont}`).val() == '' || $(`.cantidad_${val.id_cont}`).val() == null ? 0 : parseFloat($(`.cantidad_${val.id_cont}`).val());			
+			var precio_caja = $(`.precio_caja_${val.id_cont}`).val() == '' || $(`.precio_caja_${val.id_cont}`).val() == null ? 0 : parseFloat($(`.precio_caja_${val.id_cont}`).val());			
+			var compra 			= $(`.precio_compra_${val.id_cont}`).val() == '' || $(`.precio_compra_${val.id_cont}`).val() == null ? 0 : parseFloat($(`.precio_compra_${val.id_cont}`).val());			
+			var venta 			= $(`.precio_venta_${val.id_cont}`).val() == '' || $(`.precio_venta_${val.id_cont}`).val() == null ? 0 : parseFloat($(`.precio_venta_${val.id_cont}`).val());			
+			// var descuento = $(`.descuento_${val.id_cont}`).val() == '' || $(`.descuento_${val.id_cont}`).val() == null ? 0 : parseFloat($(`.descuento_${val.id_cont}`).val());
+			
+			// Calculamos: Subtotal de cada producto
+			var subtotal_producto = precio_caja;	
+			
+			// Calculamos: precio unitario de cada producto
+			var precio_unitario = precio_caja / cantidad;	
+			
+			$(`.subtotal_${val.id_cont}`).html(formato_miles(subtotal_producto)).val( redondearExp(subtotal_producto) );			
+			$(`.precio_compra_${val.id_cont}`).html(formato_miles(precio_unitario)).val( redondearExp(precio_unitario) );			
+		});
+		
 	}
+
 	calcularTotales();
 }
 
 function calcularTotales() {
-	var sub = document.getElementsByName("subtotal");
+	var igv = $('#impuesto').val();
 	var total = 0.0;
 
-	for (var i = 0; i < sub.length; i++) {	total += document.getElementsByName("subtotal")[i].value;	}
+	array_class_compra.forEach((element, index) => {
+    total += parseFloat($(`.subtotal_${element.id_cont}`).val()); console.log(total);
+    // descuento += parseFloat($(`.descuento_${element.id_cont}`).val());
+    // utilidad += parseFloat($(`.utilidad_${element.id_cont}`).val());
+  });
+
 	$("#total").html("S/. " + formato_miles(total));
 	$("#total_compra").val(redondearExp(total, 2));
 	evaluar();
@@ -310,9 +325,12 @@ function evaluar() {
 	if (detalles > 0) {	$("#btnGuardar").show();}	else { $("#btnGuardar").hide();	cont = 0;	}
 }
 
-function eliminarDetalle(id) {
+function eliminarDetalle(cont, id) {
 	$(`#fila_${id}`).remove();
-	$(`.fila_${id}`).remove();
+	array_class_compra.forEach(function (val, index, object) {
+    if (val.id_cont === cont) { object.splice(index, 1);  }
+  });
+
 	calcularTotales();
 	detalles = detalles - 1;
 	evaluar();

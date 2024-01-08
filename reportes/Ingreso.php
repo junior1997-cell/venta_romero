@@ -377,7 +377,7 @@ class PDF_Invoice extends FPDF
 	{
 		global $colonnes;
 
-		reset($colonnes);
+		// reset($colonnes);
 		$maxSize = 0;
 
 		foreach ($colonnes as $lib => $pos) {
@@ -412,7 +412,7 @@ class PDF_Invoice extends FPDF
 			$longCell  = $pos - 2;
 			$texte     = $tab[$lib];
 			$length    = $this->GetStringWidth($texte);
-			$tailleTexte = $this->sizeOfText($texte, $length);
+			// $tailleTexte = $this->sizeOfText($texte, $length);
 			$formText  = $format[$lib];
 			$this->SetXY($ordonnee, $ligne - 1);
 			$this->MultiCell($longCell, 4, $texte, 0, $formText);

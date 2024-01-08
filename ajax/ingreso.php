@@ -33,8 +33,7 @@ if (!isset($_SESSION["nombre"])) {
 			case 'guardaryeditar':
 				if (empty($idingreso)) {
 					$rspta = $ingreso->insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, $total_compra, 
-					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"], 
-					$_POST["cantidad_x_um"], $_POST["precio_x_um"]);
+					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_caja"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"]);
 					echo $rspta ? "Ingreso registrado" : "No se pudieron registrar todos los datos del ingreso";
 				} else {
 				}

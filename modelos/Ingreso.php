@@ -11,8 +11,8 @@ Class Ingreso
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idproveedor,$idusuario,$tipo_comprobante,$serie_comprobante,$num_comprobante,$fecha_hora,$impuesto,$total_compra,
-	$unidad_medida, $idarticulo,$cantidad,$precio_compra,$precio_venta, $subtotal_pr, $cantidad_x_um, $precio_x_um )
+	public function insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, $total_compra,
+	$unidad_medida, $idarticulo, $cantidad, $precio_caja, $precio_compra, $precio_venta, $subtotal_pr )
 	{
 		$sql="INSERT INTO ingreso (idproveedor,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto,total_compra,estado)
 		VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto','$total_compra','Aceptado')";		
@@ -22,13 +22,13 @@ Class Ingreso
 		$sw=true;
 
 		while ($ii < count($idarticulo))	{
-			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad,precio_compra,precio_venta, subtotal, cantidad_x_um, precio_x_um) VALUES 
-			('$idingresonew', '$idarticulo[$ii]', '$unidad_medida[$ii]', '$cantidad[$ii]','$precio_compra[$ii]','$precio_venta[$ii]', '$subtotal_pr[$ii]', '$cantidad_x_um[$ii]', '$precio_x_um[$ii]')";
+			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad, precio_compra, precio_venta, subtotal, cantidad_x_um, precio_x_um) VALUES 
+			('$idingresonew', '$idarticulo[$ii]', '$unidad_medida[$ii]', '1','$precio_caja[$ii]','$precio_venta[$ii]', '$subtotal_pr[$ii]', '$cantidad[$ii]', '$precio_compra[$ii]')";
 			ejecutarConsulta($sql_detalle) or $sw = false;
 
 			// Aumentamos el STOCK -- no se usa a pedido de cliente
-			// $sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
-      // ejecutarConsulta($sql_producto);
+			$sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
+      ejecutarConsulta($sql_producto);
 
 			$ii=$ii + 1;
 		}
@@ -38,8 +38,15 @@ Class Ingreso
 
 	
 	//Implementamos un método para anular categorías
-	public function anular($idingreso)
-	{
+	public function anular($idingreso){
+		$sql_0="SELECT * FROM detalle_ingreso WHERE idingreso ='$idingreso';";
+		$detalle = ejecutarConsultaArray($sql_0);
+
+		foreach ($detalle as $key => $val) {
+			// Reducimos el STOCK
+			$sql_producto = "UPDATE articulo SET stock = stock - '".$val['cantidad_x_um']."' WHERE idarticulo = '".$val['idarticulo']."'";
+			ejecutarConsulta($sql_producto);
+		}
 		$sql="UPDATE ingreso SET estado='Anulado' WHERE idingreso='$idingreso'";
 		return ejecutarConsulta($sql);
 	}
@@ -48,7 +55,12 @@ Class Ingreso
 	//Implementar un método para mostrar los datos de un registro a modificar
 	public function mostrar($idingreso)
 	{
-		$sql="SELECT i.idingreso,DATE(i.fecha_hora) as fecha,i.idproveedor,p.nombre as proveedor,u.idusuario,u.nombre as usuario,i.tipo_comprobante,i.serie_comprobante,i.num_comprobante,i.total_compra,i.impuesto,i.estado FROM ingreso i INNER JOIN persona p ON i.idproveedor=p.idpersona INNER JOIN usuario u ON i.idusuario=u.idusuario WHERE i.idingreso='$idingreso'";
+		$sql="SELECT i.idingreso,DATE(i.fecha_hora) as fecha,i.idproveedor,i.tipo_comprobante,i.serie_comprobante,i.num_comprobante,i.total_compra,i.impuesto,i.estado,		
+		p.nombre as proveedor,u.idusuario,u.nombre as usuario,
+		FROM ingreso i 
+		INNER JOIN persona p ON i.idproveedor=p.idpersona 
+		INNER JOIN usuario u ON i.idusuario=u.idusuario 
+		WHERE i.idingreso='$idingreso'";
 		return ejecutarConsultaSimpleFila($sql);
 	}
 

@@ -27,14 +27,19 @@ if (!isset($_SESSION["nombre"])) {
 		$num_comprobante 		= isset($_POST["num_comprobante"]) ? limpiarCadena($_POST["num_comprobante"]) : "";
 		$fecha_hora 				= isset($_POST["fecha_hora"]) ? limpiarCadena($_POST["fecha_hora"]) : "";
 		$impuesto 					= isset($_POST["impuesto"]) ? limpiarCadena($_POST["impuesto"]) : "";
+
+		$subtotal_compra 		= isset($_POST["subtotal_compra"]) ? limpiarCadena($_POST["subtotal_compra"]) : "";
+		$igv_compra 				= isset($_POST["igv_compra"]) ? limpiarCadena($_POST["igv_compra"]) : "";
 		$total_compra 			= isset($_POST["total_compra"]) ? limpiarCadena($_POST["total_compra"]) : "";
+		$total_utilidad 		= isset($_POST["total_utilidad"]) ? limpiarCadena($_POST["total_utilidad"]) : "";
 
 		switch ($_GET["op"]) {
 			case 'guardaryeditar':
 				if (empty($idingreso)) {
-					$rspta = $ingreso->insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, $total_compra, 
-					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_caja"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"]);
-					echo $rspta ? "Ingreso registrado" : "No se pudieron registrar todos los datos del ingreso";
+					$rspta = $ingreso->insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, 
+					$subtotal_compra, $igv_compra, $total_compra, $total_utilidad,
+					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_caja"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"], $_POST["utilidad_xp"], $_POST["utilidad_tp"]);
+					echo json_encode($rspta, true);
 				} else {
 				}
 			break;
@@ -46,6 +51,12 @@ if (!isset($_SESSION["nombre"])) {
 
 			case 'mostrar':
 				$rspta = $ingreso->mostrar($idingreso);
+				//Codificar el resultado utilizando json
+				echo json_encode($rspta);
+			break;
+
+			case 'compra_editar':
+				$rspta = $ingreso->compra_editar($idingreso);
 				//Codificar el resultado utilizando json
 				echo json_encode($rspta);
 			break;
@@ -106,10 +117,14 @@ if (!isset($_SESSION["nombre"])) {
 				$data = array();
 
 				while ($reg = $rspta->fetch_object()) {
+
+					$url = '../reportes/exTicketCompra.php?idingreso=';
+
 					$data[] = array(
-						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idingreso . ')"><i class="fa fa-eye"></i></button>' .
+						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idingreso . ')"><i class="fa fa-fw fa-pencil"></i></button>' .
+						' <button class="btn btn-info btn-sm" onclick="detalle_x_comprobante(' . $reg->idingreso . ')" data-toggle="tooltip" data-placement="top" title="ver"><i class="fa fa-eye"></i></button>'.
 						(($reg->estado == 'Aceptado') ?  ' <button class="btn btn-danger btn-sm" onclick="anular(' . $reg->idingreso . ')"><i class="fa fa-close"></i></button>' :'') .
-						'<a target="_blank" href="../reportes/exIngreso.php?id=' . $reg->idingreso . '"> <button class="btn btn-info btn-sm"><i class="fa fa-file"></i></button></a>',
+						'<a target="_blank" href="' . $url . $reg->idingreso . '"> <button class="btn bg-purple btn-sm" data-toggle="tooltip" data-placement="top" title="Imprimir"><i class="fa fa-file"></i></button></a>',
 						"1" => $reg->fecha,
 						"2" => $reg->proveedor,
 						"3" => $reg->usuario,
@@ -132,7 +147,7 @@ if (!isset($_SESSION["nombre"])) {
 			case 'selectProveedor':
 				$rspta = $persona->listarP();
 				while ($reg = $rspta->fetch_object()) {
-					echo '<option value=' . $reg->idpersona . '>' . $reg->nombre . '</option>';
+					echo '<option value=' . $reg->idpersona . '>' . $reg->nombre .' '.$reg->tipo_documento.': '.$reg->num_documento. '</option>';
 				}
 			break;
 
@@ -172,7 +187,7 @@ if (!isset($_SESSION["nombre"])) {
 					"aaData" => $data
 				);
 				echo json_encode($results);
-				break;
+			break;
 		}
 		//Fin de las validaciones de acceso
 	} else {

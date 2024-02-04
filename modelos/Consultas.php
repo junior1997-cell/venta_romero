@@ -10,6 +10,8 @@ Class Consultas
 
 	}
 
+	// ::::::::::::::::::::::::::::::::: VENTAS :::::::::::::::::::::::::::::::::
+
 	public function comprasfecha($fecha_inicio,$fecha_fin)
 	{
 		$sql="SELECT DATE(i.fecha_hora) as fecha,u.nombre as usuario, p.nombre as proveedor,i.tipo_comprobante,i.serie_comprobante,i.num_comprobante,i.total_compra,i.impuesto,i.estado 
@@ -81,22 +83,62 @@ Class Consultas
 		];
 	}
 
+	// ::::::::::::::::::::::::::::::::: C O M P R A S :::::::::::::::::::::::::::::::::
+
+	
+	public function ver_detalle_compra($idingreso)	{
+
+		$sql="SELECT i.idingreso, DATE(i.fecha_hora) as fecha, i.idproveedor, UPPER( i.tipo_comprobante) as tipo_comprobante, UPPER(i.serie_comprobante) as serie_comprobante, 
+		i.num_comprobante, i.subtotal, i.igv, i.descuento, i.total_compra, i.impuesto, i.estado,	p.nombre as proveedor, p.direccion, p.tipo_documento, p.num_documento, u.idusuario, u.nombre as usuario
+		FROM ingreso i 
+		INNER JOIN persona p ON i.idproveedor=p.idpersona 
+		INNER JOIN usuario u ON i.idusuario=u.idusuario
+		WHERE i.idingreso='$idingreso'";
+		$persona = ejecutarConsultaSimpleFila($sql);
+
+		$sql1 = "SELECT dv.iddetalle_ingreso, dv.cantidad, dv.precio_compra, dv.precio_venta, dv.cantidad_x_um, dv.precio_x_um, dv.subtotal,
+		a.nombre as articulo, um.nombre as unida_medida, c.nombre as categoria
+		FROM detalle_ingreso as dv 
+		INNER JOIN ingreso AS i ON i.idingreso = dv.idingreso
+		INNER JOIN articulo AS a ON a.idarticulo = dv.idarticulo
+		INNER JOIN unida_medida AS um ON um.idunida_medida = dv.idunida_medida 
+		inner join categoria c on c.idcategoria=a.idcategoria 
+		WHERE dv.idingreso='$idingreso'";
+		$detalle = ejecutarConsultaArray($sql1);
+
+		return $retorno = [
+			"status" 	=> true, 
+			"message" => 'todo oka', 
+			"data" 		=>  [
+				"compra" 	=> $persona, 
+				"detalle" 	=> $detalle, 
+			] 
+		];
+	}
+
 	// ::::::::::::::::::::::::::::::::: E S C R I T O R I O :::::::::::::::::::::::::::::::::
 
-	public function totalcomprahoy()
-	{
-		$sql="SELECT IFNULL(SUM(total_compra),0) as total_compra FROM ingreso WHERE DATE(fecha_hora)=curdate()";
+	public function totalcomprahoy() {
+		$sql="SELECT IFNULL(SUM(total_compra),0) as total_compra FROM ingreso WHERE DATE(fecha_hora)=curdate() and estado = 'Aceptado'; ";
 		return ejecutarConsulta($sql);
 	}
 
-	public function totalventahoy()
-	{
-		$sql="SELECT IFNULL(SUM(total_venta),0) as total_venta FROM venta WHERE DATE(fecha_hora)=curdate()";
+	public function totalcompra_all() {
+		$sql="SELECT IFNULL(SUM(total_compra),0) as total_compra FROM ingreso WHERE estado='Aceptado'";
 		return ejecutarConsulta($sql);
 	}
 
-	public function comprasultimos_10dias()
-	{
+	public function totalventahoy()	{
+		$sql="SELECT IFNULL(SUM(total_venta),0) as total_venta FROM venta WHERE DATE(fecha_hora)=curdate() and estado = 'Aceptado'";
+		return ejecutarConsulta($sql);
+	}
+
+	public function totalventa_all()	{
+		$sql="SELECT IFNULL(SUM(total_venta),0) as total_venta FROM venta WHERE estado='Aceptado'";
+		return ejecutarConsulta($sql);
+	}
+
+	public function comprasultimos_10dias()	{
 		$sql="SELECT CONCAT(DAY(fecha_hora),'-',MONTH(fecha_hora)) as fecha,SUM(total_compra) as total FROM ingreso GROUP by fecha_hora ORDER BY fecha_hora DESC limit 0,10";
 		return ejecutarConsulta($sql);
 	}

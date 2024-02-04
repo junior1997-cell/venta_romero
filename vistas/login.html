@@ -1,67 +1,157 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ADVentas | www.incanatoit.com</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.5 -->
-    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../public/css/font-awesome.css">
-   
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../public/css/AdminLTE.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="../public/css/blue.css">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" href="../public/img/apple-touch-icon.png">
+  <link rel="shortcut icon" href="../public/img/favicon.ico">
+  <title>Inicio de sesion</title>
+  <!-- Bootstrap 3.3.5 -->
+  <link rel="stylesheet" href="../public/bootstrap-5.0.2/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../public/fontawesome-free-6.5.1-web/css/all.min.css">
+  <!-- toastr -->
+  <link rel="stylesheet" href="../public/toastr/toastr.min.css">
+  <link rel="stylesheet" href="../public/css/style_new.css">
+</head>
+<body class="login-page background-radial-gradient">
+  <!-- Section: Design Block -->
+  <section class=" overflow-hidden">
+    <style>
+      .login-page{
+        /* -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center; */
+        background-color: #e9ecef;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        height: 100vh;
+        -webkit-justify-content: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+      }
+      .background-radial-gradient {
+        background-color: hsl(218, 41%, 15%);
+        background-image: radial-gradient(650px circle at 0% 0%, hsl(218, 41%, 35%) 15%, hsl(218, 41%, 30%) 35%, hsl(218, 41%, 20%) 75%, hsl(218, 41%, 19%) 80%, transparent 100%), radial-gradient(1250px circle at 100% 100%,  hsl(218, 41%, 45%) 15%,hsl(218, 41%, 30%) 35%,hsl(218, 41%, 20%) 75%,hsl(218, 41%, 19%) 80%, transparent 100%);
+      }
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body class="hold-transition login-page">
-    <div class="login-box">
-      <div class="login-logo">
-        <a href="../../index2.html"><b>ADVentas</b></a>
-      </div><!-- /.login-logo -->
-      <div class="login-box-body">
-        <p class="login-box-msg">Ingrese sus datos de Acceso</p>
-        <form method="post" id="frmAcceso">
-          <div class="form-group has-feedback">
-            <input type="text" id="logina" name="logina" class="form-control" placeholder="Usuario">
-            <span class="fa fa-user form-control-feedback"></span>
+      #radius-shape-1 {
+        height: 220px;
+        width: 220px;
+        top: -60px;
+        left: -130px;
+        background: radial-gradient(#44006b, #ad1fff);
+        overflow: hidden;
+      }
+
+      #radius-shape-2 {
+        border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
+        bottom: -60px;
+        right: -110px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(#44006b, #ad1fff);
+        overflow: hidden;
+      }
+
+      .bg-glass {  background-color: hsla(0, 1.84%, 1.63%, 0.8) !important;  backdrop-filter: saturate(200%) blur(25px);  }
+      /* .resplandor-img{ box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); background-color: rgb(0 0 0 / 34%); } */
+      @media only screen and (max-width: 600px) {
+        .imagen-logo{ position: absolute; left: 20%; top: -65px;  }
+      }
+      @media only screen and (min-width: 600px) {
+        .imagen-logo{ position: absolute; left: 30%; top: -65px;  }
+      }
+    </style>
+
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+      <div class="row gx-lg-5 align-items-center mb-5">
+
+        <div class="col-lg-6 col-xl-6 col-xxl-8 mb-5 mb-lg-0" style="z-index: 10">
+          <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
+            Bienvenido <br />
+            <span style="color: hsl(218, 81%, 75%)"> a la administracion de tu negocio.</span>
+          </h1>
+          <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
+            ¡Bienvenido/a a nuestro administrador de compras y ventas! 🛍️🤝 
+            Explora una experiencia única de gestión comercial, donde comprar y vender se convierten en procesos simples y eficientes. 
+            Descubre herramientas poderosas para organizar tus transacciones, maximizar tus ventas y simplificar tus compras. 
+            ¡Estamos aquí para facilitar tu camino hacia el éxito comercial! 💼✨
+          </p>
+        </div>
+
+        <div class="col-lg-6 col-xl-6 col-xxl-4 mb-5 mb-lg-0 position-relative">
+          <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+          <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+          <div class="card bg-glass" style="border-radius: 15px !important;">
+            <div class="card-body px-4 py-5 px-md-5">
+              <form name="form-login" id="form-login"  method="post">
+                <!-- 2 column grid layout with text inputs for the first and last names -->
+                <div class="row">
+                  <div class="col-md-12 text-center">
+                    <img class="img-responsive imagen-logo resplandor-img" src="../public/img/logo-romero.png" alt="Logo" width="200px">
+                  </div>
+                  <div class="col-md-12 text-center m-t-20px">
+                    <span class="my-2 text-white">Ingresa credenciales para iniciar sesion</span>
+                  </div>
+                  <!-- input Correo -->
+                  <div class="col-md-12 mt-4 mb-2">
+                    <div class="form-group">
+                      <label class="form-label text-primary" for="logina"><b>Usuario</b></label>
+                      <input type="text" name="logina" id="logina" class="form-control" placeholder="Usuario" />                      
+                    </div>
+                  </div>
+                  <!-- input Password-->
+                  <div class="col-md-12 mb-1">
+                    <div class="form-group mb-4">
+                      <label class="form-label text-primary" for="clavea"><b>Contraseña</b></label>
+                      <input type="password" name="clavea" id="clavea" class="form-control" placeholder="Contraseña" />                      
+                    </div>
+                  </div>
+                  <!-- Submit button -->
+                  <div class="col-md-12 mb-1 text-center">
+                    <button type="submit" class="btn btn-primary btn-block mb-4">  Ingresar  </button>
+                  </div>                  
+                </div>                
+
+                <!-- Register buttons -->
+                <div class="text-center">
+                  <p class="text-white" >o visitanos en:</p>
+                  <button type="button" class="btn btn-link btn-floating mx-1 btn-red-social"> <i class="fab fa-facebook-f"></i> </button>
+                  <button type="button" class="btn btn-link btn-floating mx-1 btn-red-social"> <i class="fa-brands fa-instagram"></i> </button>
+                  <button type="button" class="btn btn-link btn-floating mx-1 btn-red-social"> <i class="fab fa-twitter"></i> </button>
+                  <button type="button" class="btn btn-link btn-floating mx-1 btn-red-social"> <i class="fa-brands fa-whatsapp"></i> </button>
+                </div>
+              </form>
+            </div>
           </div>
-          <div class="form-group has-feedback">
-            <input type="password" id="clavea" name="clavea" class="form-control" placeholder="Password">
-            <span class="fa fa-key form-control-feedback"></span>
-          </div>
-          <div class="row">
-            <div class="col-xs-8">
-              
-            </div><!-- /.col -->
-            <div class="col-xs-4">
-              <button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
-            </div><!-- /.col -->
-          </div>
-        </form>
-        
+        </div>
+      </div>
+    </div>
+  </section>
 
-      </div><!-- /.login-box-body -->
-    </div><!-- /.login-box -->
+  <!-- jQuery -->
+  <script src="../public/js/jquery-3.1.1.min.js"></script>
+  <!-- Bootstrap 5.0.2 -->
+  <script src="../public/bootstrap-5.0.2/js/bootstrap.min.js"></script>
+  <!-- jquery-validation -->
+  <script src="../public/jquery-validation/jquery.validate.min.js"></script>
+  <script src="../public/jquery-validation/additional-methods.min.js"></script>
+  <script src="../public/jquery-validation/localization/messages_es_PE.js"></script>
+  <!-- toastr -->
+  <script src="../public/toastr/toastr.min.js"></script>
 
-    <!-- jQuery -->
-    <script src="../public/js/jquery-3.1.1.min.js"></script>
-    <!-- Bootstrap 3.3.5 -->
-    <script src="../public/js/bootstrap.min.js"></script>
-     <!-- Bootbox -->
-    <script src="../public/js/bootbox.min.js"></script>
+  <!-- Funciones Crud -->
+  <script type="text/javascript" src="../public/js/funcion_crud.js"></script>
+  <!-- Funciones Generales -->
+  <script type="text/javascript" src="../public/js/funcion_general.js"></script>
 
-    <script type="text/javascript" src="scripts/login.js"></script>
+  <script type="text/javascript" src="scripts/login.js"></script>
+</body>
+</html>
 
-
-  </body>
-</html> 

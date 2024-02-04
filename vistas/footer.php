@@ -20,6 +20,9 @@
     <script src="../public/moment/moment.min.js"></script>
     <script src="../public/moment/locale/es-mx.js"></script>
 
+    <!-- sweetalert2 -->
+    <script src="../public/sweetalert2/sweetalert2.all.min.js"></script> 
+
     <!-- DATATABLES -->
     <script src="../public/datatables/jquery.dataTables.min.js"></script>    
     <script src="../public/datatables/dataTables.buttons.min.js"></script>

@@ -33,6 +33,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Número</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Estado</th>
                   </thead>
                   <tbody>
                   </tbody>
@@ -43,6 +44,7 @@ if (!isset($_SESSION["nombre"])) {
                     <th>Número</th>
                     <th>Teléfono</th>
                     <th>Email</th>
+                    <th>Estado</th>
                   </tfoot>
                 </table>
               </div>

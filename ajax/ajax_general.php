@@ -228,6 +228,102 @@
         echo json_encode( $retorno, true );
 
       break;
+
+      case 'detalle_x_comprobante_compra':       
+
+        $rspta = $consulta->ver_detalle_compra($_POST['id']);
+        $subtotal = 0;    $html_input = ''; $html_data = '';
+
+        $html_input = '<div class="row">
+          <!-- Tipo de Empresa -->        
+          <div class="col-lg-8">
+            <div class="form-group">
+              <label class="font-size-12px" for="idproveedor">Proveedor</label>
+              <span class="form-control-mejorado input-sm" >'.$rspta['data']['compra']['proveedor'].'</span>
+            </div>
+          </div>
+          <!-- fecha -->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="font-size-12px" for="fecha_compra">Fecha </label>
+              <span class="form-control-mejorado input-sm"><i class="far fa-calendar-alt"></i>&nbsp;&nbsp;&nbsp;'.date("d/m/Y", strtotime($rspta['data']['compra']['fecha'])).' </span>
+            </div>
+          </div>
+          <!-- Tipo de comprobante -->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="font-size-12px" for="tipo_comprovante">Tipo Comprobante</label>
+              <span  class="form-control-mejorado input-sm"> '. ((empty($rspta['data']['compra']['tipo_comprobante'])) ? '- - -' :  $rspta['data']['compra']['tipo_comprobante'])  .' </span>
+            </div>
+          </div>
+          <!-- serie_comprovante-->
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="font-size-12px" for="serie_comprovante">N° de Comprobante</label>
+              <span  class="form-control-mejorado input-sm"> '. $rspta['data']['compra']['serie_comprobante']  . '-' . $rspta['data']['compra']['num_comprobante'].' </span>
+            </div>
+          </div>
+          <!-- IGV-->
+          <div class="col-lg-4 " >
+            <div class="form-group">
+              <label class="font-size-12px" for="igv">IGV</label>
+              <span class="form-control-mejorado input-sm"> '.$rspta['data']['compra']['impuesto'].' </span>                                 
+            </div>
+          </div>
+          <!-- Descripcion-->
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label class="font-size-12px" for="descripcion">Descripción </label> <br />
+              <textarea class="form-control-mejorado form-control-sm" readonly rows="1">'.((empty($rspta['data']['compra']['observacion'])) ? '- - -' :$rspta['data']['compra']['observacion']).'</textarea>
+            </div>
+          </div>
+        </div> ';
+        $html_detalle = '';
+        foreach ($rspta['data']['detalle'] as $key => $val) {			
+					$img = (empty( $val['imagen']) ? $img = '../files/articulos/producto-sin-foto.svg' : $img = '../files/articulos/' .  $val['imagen'] );	
+					$html_detalle .= '<tr class="filas">						
+						<td class="font-size-12px">
+							<div class="user-block">
+								<img class="img-circle" src="' . $img . '" alt="User Image">
+								<span class="username font-size-12px"><a href="#">' . $val['articulo'] . '</a></span>				 
+								<div class="description font-size-10px">	' .$val['categoria'] . '	</div>
+							</div>
+						</td>
+						<td>' . $val['cantidad_x_um'] . '</td>
+						<td class="text-right">' . $val['precio_compra'] . '</td>
+            <td class="text-right">' . $val['precio_x_um'] . '</td>
+						<td class="text-right">' . $val['precio_venta'] . '</td>
+						<td class="text-right">0</td>
+						<td class="text-right">' . $val['subtotal'] . '</td>						
+					</tr>';					
+				}				
+
+				$html_data = '<table class="table table-striped table-bordered table-condensed table-hover" style="width: 100% !important;"> 
+					<thead style="background-color:#A9D0F5" class="text-nowrap">
+						<th>Artículo</th> 
+            <th><span data-toggle="tooltip" data-placement="top" title="Cantidad total por caja">Cant</span></th> 
+            <th><span data-toggle="tooltip" data-placement="top" title="Precio por caja">P. Caja</span></th> 
+            <th><span data-toggle="tooltip" data-placement="top" title="Precio por unidad">P. Unitario</span></th> 
+            <th><span data-toggle="tooltip" data-placement="top" title="Precio de  venta al publico">Venta</span></th> 
+            <th> <span data-toggle="tooltip" data-placement="top" title="Decuento por producto">Descto</span></th> <th>Subtotal</th>
+					</thead>
+					'.$html_detalle.'
+					<tfoot>			
+						<th></th> <th></th> <th></th> <th></th> <th></th>
+            <th><h5>Subtotal</h5><h5>Descuento</h5> <h5>IGV <span>(' . floatval($rspta['data']['compra']['impuesto'])  . '%)</span></h5> <h4><b>TOTAL</b></h4></th>
+            <th class="text-nowrap">
+              <h5 class="text-nowrap text-right"><span class="pull-left">S/.</span> <span >' . number_format($rspta['data']['compra']['subtotal'], 2, '.', ',')  . '</span> </h5>
+              <h5 class="text-nowrap text-right"><span class="pull-left">S/.</span> <span >' . number_format($rspta['data']['compra']['descuento'], 2, '.', ',')  . '</span> </h5>
+              <h5 class="text-nowrap text-right"><span class="pull-left"> S/.</span> <span >' . number_format($rspta['data']['compra']['igv'], 2, '.', ',')  . '</span></h5>
+              <h4 class="text-nowrap text-right text-bold"><span class="pull-left">S/.</span> <span >' . number_format($rspta['data']['compra']['total_compra'], 2, '.', ',')  . '</span></h4>
+						</th>             
+					</tfoot>
+				</table>';
+
+        $retorno = ['status' => true, 'message' => 'todo oka', 'data' => $html_input. $html_data ,];
+        echo json_encode( $retorno, true );
+
+      break;
    
 
       default: 

@@ -1,0 +1,8 @@
+
+:::::::::::::::::::::::: ACTUALIZAR FECHAS CON SUS NOMBRES DE: DIA Y MES ::::::::::::::
+
+SET lc_time_names = 'es_ES';
+UPDATE ingreso as v, ingreso  as vp
+SET v.day_name= CONCAT(UPPER(LEFT(DAYNAME(vp.fecha_hora),1)),SUBSTR(DAYNAME(vp.fecha_hora),2)), 
+v.month_name=CONCAT(UPPER(LEFT(MONTHNAME(vp.fecha_hora),1)),SUBSTR(MONTHNAME(vp.fecha_hora),2)), 
+v.year_name=YEAR(vp.fecha_hora) WHERE  v.idingreso = vp.idingreso;

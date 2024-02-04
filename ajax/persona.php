@@ -34,12 +34,17 @@ if (!isset($_SESSION["nombre"])) {
 					$rspta = $persona->editar($idpersona, $tipo_persona, $nombre, $tipo_documento, $num_documento, $direccion, $telefono, $email);
 					echo $rspta ? "Persona actualizada" : "Persona no se pudo actualizar";
 				}
-				break;
+			break;
 
 			case 'eliminar':
 				$rspta = $persona->eliminar($idpersona);
 				echo $rspta ? "Persona eliminada" : "Persona no se puede eliminar";
-				break;
+			break;
+
+			case 'activar':
+				$rspta = $persona->activar($idpersona);
+				echo $rspta ? "Persona eliminada" : "Persona no se puede eliminar";
+			break;
 
 			case 'mostrar':
 				$rspta = $persona->mostrar($idpersona);
@@ -54,13 +59,15 @@ if (!isset($_SESSION["nombre"])) {
 
 				while ($reg = $rspta->fetch_object()) {
 					$data[] = array(
-						"0" => '<button class="btn btn-warning" onclick="mostrar(' . $reg->idpersona . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-danger" onclick="eliminar(' . $reg->idpersona . ')"><i class="fa fa-trash"></i></button>',
+						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idpersona . ')"><i class="fa fa-pencil"></i></button>' .
+						($reg->estado == '1' ? ' <button class="btn btn-danger btn-sm" onclick="eliminar(' . $reg->idpersona . ')"><i class="fa fa-trash"></i></button>' :
+							' <button class="btn btn-success btn-sm" onclick="activar(' . $reg->idpersona . ')"><i class="fa fa-check"></i></button>'),
 						"1" => $reg->nombre,
 						"2" => $reg->tipo_documento,
 						"3" => $reg->num_documento,
 						"4" => $reg->telefono,
-						"5" => $reg->email
+						"5" => $reg->email,
+						"6" => ($reg->estado == '1') ? '<span class="label bg-green">Activo</span>' :'<span class="label bg-red">Inactivo</span>'
 					);
 				}
 				$results = array(
@@ -80,13 +87,15 @@ if (!isset($_SESSION["nombre"])) {
 
 				while ($reg = $rspta->fetch_object()) {
 					$data[] = array(
-						"0" => '<button class="btn btn-warning" onclick="mostrar(' . $reg->idpersona . ')"><i class="fa fa-pencil"></i></button>' .
-							' <button class="btn btn-danger" onclick="eliminar(' . $reg->idpersona . ')"><i class="fa fa-trash"></i></button>',
+						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idpersona . ')"><i class="fa fa-pencil"></i></button>' .
+						($reg->estado == '1' ? ' <button class="btn btn-danger btn-sm" onclick="eliminar(' . $reg->idpersona . ')"><i class="fa fa-trash"></i></button>' : 
+						' <button class="btn btn-success btn-sm" onclick="activar(' . $reg->idpersona . ')"><i class="fa fa-check"></i></button>'),
 						"1" => $reg->nombre,
 						"2" => $reg->tipo_documento,
 						"3" => $reg->num_documento,
 						"4" => $reg->telefono,
-						"5" => $reg->email
+						"5" => $reg->email,
+						"6" => ($reg->estado == '1') ? '<span class="label bg-green">Activo</span>' :'<span class="label bg-red">Inactivo</span>'
 					);
 				}
 				$results = array(

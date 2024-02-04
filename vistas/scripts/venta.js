@@ -125,7 +125,8 @@ function listarArticulos() {
 		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
 		buttons: [
 			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_articulos.ajax.reload(null, false); } },
-			{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },	],
+			{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },	
+		],
 		"ajax":		{
 			url: '../ajax/venta.php?op=listarArticulosVenta',
 			type: "get",
@@ -138,7 +139,7 @@ function listarArticulos() {
 			sLoadingRecords: '<i class="fa fa-fw fa-spinner fa-pulse"></i> Cargando datos...'
 		},
 		"bDestroy": true,
-		"iDisplayLength": 5,//Paginación
+		"iDisplayLength": 10,//Paginación
 		"order": [[0, "desc"]],//Ordenar (columna,orden)
 		columnDefs: [    
 			{ targets: [5], render: function (data, type) { var number = $.fn.dataTable.render.number(',', '.', 2).display(data); if (type === 'display') { let color = 'numero_positivos'; if (data < 0) {color = 'numero_negativos'; } return `<span class="float-left">S/</span> <span class="float-right ${color} "> ${number} </span>`; } return number; }, },  
@@ -223,8 +224,7 @@ function marcarImpuesto() {
 	var tipo_comprobante = $("#tipo_comprobante option:selected").text();
 	if (tipo_comprobante == 'Factura') {
 		$("#impuesto").val(impuesto);
-	}
-	else {
+	}	else {
 		$("#impuesto").val("0");
 	}
 }
@@ -298,7 +298,7 @@ function modificarSubototales() {
 }
 
 function calcularTotales() {
-	var val_igv = $('#impuesto').val();
+	var val_igv = $('#impuesto').val() == '' || $(`#impuesto`).val() == null ? 0 : parseFloat($(`#impuesto`).val());
   var igv = 0;
   var total = 0.0;
   var descuento = 0.0;
@@ -308,7 +308,7 @@ function calcularTotales() {
     total += parseFloat($(`.subtotal_${element.id_cont}`).val());
     descuento += parseFloat($(`.descuento_${element.id_cont}`).val());
     utilidad += parseFloat($(`.utilidad_${element.id_cont}`).val());
-  });
+  });	
 	
 	$("#descuento_html").html(`<span class="pull-left">S/.</span> ${formato_miles(descuento)} `); $("#total_descuento").val( redondearExp(descuento) );
 	$("#total").html(`<span class="pull-left">S/.</span> ${formato_miles(total)}` ); $("#total_venta").val( redondearExp(total) );
@@ -402,11 +402,16 @@ function detalle_x_comprobante(id) {
 	$('.tooltip').remove();
 	$("#modal-ver-detalle").modal('show');
 	$.post("../ajax/ajax_general.php?op=detalle_x_comprobante", {id:id}, function (e) {	
-		e = JSON.parse(e); console.log(e);
+		e = JSON.parse(e); //console.log(e);
 		$(".detalle-x-comprobante").html(e.data);	
 	});	
 }
 
-
-
 init();
+
+function reload_cliente() { 
+	$('.btn-reload-cliente').html('<i class="fa fa-fw fa-spinner fa-pulse fa-lg text-white"></i>');	
+	$.post("../ajax/venta.php?op=selectCliente", function (r) {	
+		$("#idcliente").html(r); $('#idcliente').selectpicker('refresh'); $('.btn-reload-cliente').html('<i class="fa fa-rotate-right"></i>');	
+	}); 
+}

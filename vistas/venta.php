@@ -37,7 +37,7 @@ if (!isset($_SESSION["nombre"])) {
                   <thead>
                     <th>Opciones</th>
                     <th>Fecha</th>                    
-                    <th>Usuario</th>
+                    <th>Cliente</th>
                     <th>Documento</th>
                     <th>Número</th>
                     <th>Total Venta</th>
@@ -49,7 +49,7 @@ if (!isset($_SESSION["nombre"])) {
                   <tfoot>
                     <th>Opciones</th>
                     <th>Fecha</th>
-                    <th>Usuario</th>
+                    <th>Cliente</th>
                     <th>Documento</th>
                     <th>Número</th>
                     <th class="text-right px-1">Total Venta</th>
@@ -67,7 +67,7 @@ if (!isset($_SESSION["nombre"])) {
                     <input type="hidden" name="idventa" id="idventa">
 
                     <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                      <label>Cliente(*):</label>                      
+                      <label> <span class="badge bg-info cursor-pointer btn-reload-cliente" data-toggle="tooltip" data-original-title="Actualizar clientes" onclick="reload_cliente();"><i class="fa fa-rotate-right"></i></span>  Cliente(*):</label>                      
                       <select id="idcliente" name="idcliente" class="form-control selectpicker" data-live-search="true" required>  </select>
                     </div>
 

@@ -26,9 +26,14 @@ Class Persona
 	}
 
 	//Implementamos un método para eliminar categorías
-	public function eliminar($idpersona)
-	{
-		$sql="DELETE FROM persona WHERE idpersona='$idpersona'";
+	public function eliminar($idpersona)	{
+		$sql="UPDATE persona SET estado='0' WHERE idpersona='$idpersona'";
+		return ejecutarConsulta($sql);
+	}
+
+	//Implementamos un método para eliminar categorías
+	public function activar($idpersona)	{
+		$sql="UPDATE persona SET estado='1' WHERE idpersona='$idpersona'";
 		return ejecutarConsulta($sql);
 	}
 

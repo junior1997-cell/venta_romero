@@ -11,29 +11,54 @@ Class Ingreso
 	}
 
 	//Implementamos un método para insertar registros
-	public function insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, $total_compra,
-	$unidad_medida, $idarticulo, $cantidad, $precio_caja, $precio_compra, $precio_venta, $subtotal_pr )
-	{
-		$sql="INSERT INTO ingreso (idproveedor,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto,total_compra,estado)
-		VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto','$total_compra','Aceptado')";		
-		$idingresonew=ejecutarConsulta_retornarID($sql);
+	public function insertar($idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, 
+	$subtotal_compra, $igv_compra, $total_compra, $total_utilidad,
+	$unidad_medida, $idarticulo, $cantidad, $precio_caja, $precio_compra, $precio_venta, $subtotal_pr, $utilidad_xp, $utilidad_tp )	{
 
-		$ii=0;
-		$sw=true;
+		$sql_1 = "SELECT i.tipo_comprobante, i.serie_comprobante, i.num_comprobante, DATE_FORMAT(i.fecha_hora, '%d/%m/%Y') as fecha, i.impuesto, i.descuento, i.total_compra, i.comprobante, i.estado, 
+		DATE_FORMAT(i.created_at, '%d/%m/%Y %h:%i:%s %p') as created_at, p.nombre as proveedor, p.tipo_documento, p.num_documento
+		FROM ingreso as i	INNER JOIN persona as p ON p.idpersona = i.idproveedor 
+		WHERE  p.num_documento= (SELECT num_documento FROM persona WHERE idpersona = '$idproveedor') AND tipo_comprobante = '$tipo_comprobante' AND serie_comprobante ='$serie_comprobante' AND num_comprobante ='$num_comprobante';";
+		$val_compra = ejecutarConsultaArray($sql_1);
 
-		while ($ii < count($idarticulo))	{
-			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad, precio_compra, precio_venta, subtotal, cantidad_x_um, precio_x_um) VALUES 
-			('$idingresonew', '$idarticulo[$ii]', '$unidad_medida[$ii]', '1','$precio_caja[$ii]','$precio_venta[$ii]', '$subtotal_pr[$ii]', '$cantidad[$ii]', '$precio_compra[$ii]')";
-			ejecutarConsulta($sql_detalle) or $sw = false;
+		if ( empty($val_compra) ) {
+			$sql="INSERT INTO ingreso (idproveedor,idusuario,tipo_comprobante,serie_comprobante,num_comprobante,fecha_hora,impuesto, subtotal, igv,  total_compra, utilidad_p)
+			VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto', '$subtotal_compra', '$igv_compra', '$total_compra', '$total_utilidad')";		
+			$idingresonew=ejecutarConsulta_retornarID($sql);
 
-			// Aumentamos el STOCK -- no se usa a pedido de cliente
-			$sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
-      ejecutarConsulta($sql_producto);
+			$ii=0;
+			
 
-			$ii=$ii + 1;
-		}
+			while ($ii < count($idarticulo))	{
+				$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad, precio_compra, precio_venta, subtotal, cantidad_x_um, precio_x_um, utilidad_pxp, utilidad_ptp) VALUES 
+				('$idingresonew', '$idarticulo[$ii]', '$unidad_medida[$ii]', '1','$precio_caja[$ii]','$precio_venta[$ii]', '$subtotal_pr[$ii]', '$cantidad[$ii]', '$precio_compra[$ii]', '$utilidad_xp[$ii]', '$utilidad_tp[$ii]')";
+				ejecutarConsulta($sql_detalle);
 
-		return $sw;
+				// Aumentamos el STOCK 
+				$sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
+				ejecutarConsulta($sql_producto);
+
+				$ii=$ii + 1;
+			}
+
+			return  $sw = array( 'status' => true, 'message' => 'todo ok ejecutarConsulta', 'data' => [], 'id_tabla' => '' );
+		} else {
+			$info_repetida = '';
+	
+			foreach ($val_compra as $key => $val) {
+			$info_repetida .= '<li class="text-left font-size-13px">
+			<span class="font-size-18px text-danger"><b >'.$val['tipo_comprobante'].': </b> '.$val['serie_comprobante'].'</span><br>
+			<b>Proveedor: </b>'.$val['proveedor'].'<br>	
+			<b>'.$val['tipo_documento'].'</b>: '.$val['num_documento'].'<br>		
+			<b>Fecha: </b>'.($val['fecha']).'<br>	
+			<b>Total compra: </b>'.number_format( floatval($val['total_compra']), 2, '.',',' ).'<br>		
+			<b>Papelera: </b>'.( $val['estado']==0 ? '<i class="fa fa-check text-success"></i> SI':'<i class="fa fa-times text-danger"></i> NO') .' <br>	
+			<b>Creado el: </b>'.($val['created_at']).'<br>	
+			<hr class="m-t-2px m-b-2px">
+			</li>';
+			}
+			return $sw = array( 'status' => 'duplicado', 'message' => 'duplicado', 'data' => '<ol>'.$info_repetida.'</ol>', 'id_tabla' => '' );
+		}	
 	}
 
 	
@@ -51,6 +76,33 @@ Class Ingreso
 		return ejecutarConsulta($sql);
 	}
 
+	public function compra_editar($idingreso)	{
+
+		$sql="SELECT i.idingreso, DATE(i.fecha_hora) as fecha, i.idproveedor, UPPER( i.tipo_comprobante) as tipo_comprobante, UPPER(i.serie_comprobante) as serie_comprobante, 
+		i.num_comprobante, i.total_compra, i.impuesto, i.estado,	p.nombre as proveedor, p.direccion, p.tipo_documento, p.num_documento, u.idusuario, u.nombre as usuario
+		FROM ingreso i 
+		INNER JOIN persona p ON i.idproveedor=p.idpersona 
+		INNER JOIN usuario u ON i.idusuario=u.idusuario
+		WHERE i.idingreso='$idingreso'";
+		$persona = ejecutarConsultaSimpleFila($sql);
+
+		$sql1 = "SELECT dv.iddetalle_ingreso, dv.cantidad, dv.precio_compra, dv.precio_venta, dv.cantidad_x_um, dv.precio_x_um, dv.subtotal,
+		a.nombre as articulo, um.nombre as unida_medida
+		FROM detalle_ingreso as dv 
+		INNER JOIN ingreso AS i ON i.idingreso = dv.idingreso
+		INNER JOIN articulo AS a ON a.idarticulo = dv.idarticulo
+		INNER JOIN unida_medida AS um ON um.idunida_medida = dv.idunida_medida WHERE dv.idingreso='$idingreso'";
+		$detalle = ejecutarConsultaArray($sql1);
+
+		return $retorno = [
+			"status" 	=> true, 
+			"message" => 'todo oka', 
+			"data" 		=>  [
+				"persona" 	=> $persona, 
+				"detalle" 	=> $detalle, 
+			] 
+		] ;
+	}
 
 	//Implementar un método para mostrar los datos de un registro a modificar
 	public function mostrar($idingreso)

@@ -22,7 +22,7 @@ if (!isset($_SESSION["nombre"])) {
                 <h1 class="box-title">Ingreso <button class="btn btn-success" id="btnagregar" onclick="mostrarform(true); limpiar();"><i class="fa fa-plus-circle"></i> Agregar</button> <a href="../reportes/rptingresos.php" target="_blank"><button class="btn btn-info"><i class="fa fa-clipboard"></i> Reporte</button></a></h1>
                 <div class="box-tools pull-right">
                 </div>
-              </div>
+              </div> 
               <!-- /.box-header -->
               <!-- centro -->
               <div class="panel-body table-responsive" id="listadoregistros">
@@ -66,7 +66,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <label>Tipo Comprobante(*):</label>
-                    <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required="">
+                    <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required="" >
                       <option value="Boleta">Boleta</option>
                       <option value="Factura">Factura</option>
                       <option value="Ticket">Ticket</option>
@@ -82,7 +82,7 @@ if (!isset($_SESSION["nombre"])) {
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
                     <label>Impuesto:</label>
-                    <input type="text" class="form-control" name="impuesto" id="impuesto" required="">
+                    <input type="number" class="form-control" name="impuesto" id="impuesto" required="" min="0" max="100" onchange="modificarSubototales();" onkeyup="modificarSubototales();">
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-6 col-xs-12">
                     <a data-toggle="modal" href="#myModal">
@@ -107,9 +107,12 @@ if (!isset($_SESSION["nombre"])) {
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th>TOTAL</th>
-                        <th>
-                          <h4 id="total">S/. 0.00</h4><input type="hidden" name="total_compra" id="total_compra" >
+                        <th class="text-right"><h5><b>SUBTOTAL</b></h5><h5><b class="igv_percent" >IGV (0%)</b></h5><h4><b>TOTAL</b></h4></th>
+                        <th class="text-right text-nowrap">
+                          <h5 id="subtotal">S/. 0.00 </h5> <input type="hidden" name="subtotal_compra" id="subtotal_compra" >
+                          <h5 id="igv">S/. 0.00 </h5> <input type="hidden" name="igv_compra" id="igv_compra" >
+                          <h4 id="total">S/. 0.00 </h4> <input type="hidden" name="total_compra" id="total_compra" >
+                          <input type="hidden" name="total_utilidad" id="total_utilidad" >
                         </th>
                       </tfoot>
                       <tbody>
@@ -171,8 +174,33 @@ if (!isset($_SESSION["nombre"])) {
           
         </div>
       </div>
-    </div>
+    </div>    
     <!-- Fin modal -->
+
+    <div class="modal fade" id="modal-ver-detalle">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Detalle Compra</h4>
+          </div>
+          <div class="modal-body detalle-x-comprobante">
+            <div class="text-center">
+              <i class="fa fa-fw fa-spinner fa-pulse fa-2x"></i> <br> Cargando datos...
+            </div>             
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-success">Save changes</button> -->
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    
   <?php
   } else {
     require 'noacceso.php';

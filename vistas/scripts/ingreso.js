@@ -6,37 +6,32 @@ function init() {
 	mostrarform(false);
 	listar();
 
-	$("#formulario").on("submit", function (e) {
-		guardaryeditar(e);
-	});
+	$("#formulario").on("submit", function (e) {	guardaryeditar(e);	});
 	//Cargamos los items al select proveedor
-	$.post("../ajax/ingreso.php?op=selectProveedor", function (r) {
-		$("#idproveedor").html(r);
-		$('#idproveedor').selectpicker('refresh');
-	});
+	$.post("../ajax/ingreso.php?op=selectProveedor", function (r) {	$("#idproveedor").html(r);	$('#idproveedor').selectpicker('refresh');	});
 	$('#mCompras').addClass("treeview active");
 	$('#lIngresos').addClass("active");
 }
 
 //Función limpiar
 function limpiar() {
-	$("#idproveedor").val("");
-	$("#idproveedor").selectpicker('refresh');
+	$("#idproveedor").val("");	$("#idproveedor").selectpicker('refresh');
 	$("#proveedor").val("");
 	$("#serie_comprobante").val("");
 	$("#num_comprobante").val("");
 	$("#impuesto").val("0");
 
-	$("#total_compra").val("");
-	$(".filas").remove();
-	$("#total").html("0");
+	$("#subtotal_compra").val("");	$("#subtotal").html("0.00");
+	$("#igv_compra").val("");	$("#igv").html("0.00");
+	$("#total_compra").val("");	$("#total").html("0.00");
+	$("#total_utilidad").val("");
 
+	$(".filas").remove();
 	//Obtenemos la fecha actual
 	$('#fecha_hora').val(moment().format('YYYY-MM-DD'));
 
 	//Marcamos el primer tipo_documento
-	$("#tipo_comprobante").val("Boleta");
-	$("#tipo_comprobante").selectpicker('refresh');
+	$("#tipo_comprobante").val("Boleta");	$("#tipo_comprobante").selectpicker('refresh');
 }
 
 //Función mostrar formulario
@@ -113,7 +108,10 @@ function listarArticulos() {
 		"aProcessing": true,//Activamos el procesamiento del datatables
 		"aServerSide": true,//Paginación y filtrado realizados por el servidor
 		dom: '<Bl<f>rtip>',//Definimos los elementos del control de tabla
-		buttons: [{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },	],
+		buttons: [
+			{ text: '<i class="fa fa-fw fa-repeat fa-lg" data-toggle="tooltip" data-placement="top" title="Recargar"></i>', className: "btn bg-gradient-info", action: function ( e, dt, node, config ) { tabla_articulo.ajax.reload(null, false); } },
+			{ extend: "colvis", text: `Columnas`, className: "btn bg-gradient-gray", exportOptions: { columns: "th:not(:last-child)", }, },	
+		],
 		"ajax":		{
 			url: '../ajax/ingreso.php?op=listarArticulos',
 			type: "get",
@@ -148,14 +146,25 @@ function guardaryeditar(e) {
 		data: formData,
 		contentType: false,
 		processData: false,
-		success: function (datos) {
-			bootbox.alert(datos);
-			mostrarform(false);
-			tabla_ingreso.ajax.reload(null, false);
-		}
+		success: function (e) {
+			try {
+				e = JSON.parse(e);
+				if (e.status == true) {
+					mostrarform(false);
+					tabla_ingreso.ajax.reload(null, false);
+					limpiar();
+					sw_success('Exito!','Registo guardado correctamente');
+				}else if (e.status = 'duplicado') {
+					ver_errores(e);
+				}
+			} catch (err) {
+				console.log('Error: ', err.message); toastr.error('<h5 class="font-size-16px">Error temporal!!</h5> puede intentalo mas tarde, o comuniquese con <i><a href="tel:+51921305769" >921-305-769</a></i> ─ <i><a href="tel:+51921487276" >921-487-276</a></i>');
+			}
+			
+		},
 
 	});
-	limpiar();
+	
 }
 
 function mostrar(idingreso) {
@@ -210,10 +219,10 @@ function marcarImpuesto() {
 	var tipo_comprobante = $("#tipo_comprobante option:selected").text();
 	if (tipo_comprobante == 'Factura') {
 		$("#impuesto").val(impuesto);
-	}
-	else {
+	}	else {
 		$("#impuesto").val("0");
 	}
+	modificarSubototales();
 }
 
 function agregarDetalle(idarticulo, img) {
@@ -250,14 +259,18 @@ function agregarDetalle(idarticulo, img) {
 						</div>
 						<input type="hidden" name="idarticulo[]" value="${idarticulo}">
 					</td>
-					<td><input type="number" name="cantidad[]" 			class="cantidad_${cont}" 			value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
-					<td><input type="number" name="precio_caja[]" 	class="precio_caja_${cont}" 	value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+					<td><input type="number" name="cantidad[]" 			class="form-control cantidad_${cont}" 			value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+					<td><input type="number" name="precio_caja[]" 	class="form-control precio_caja_${cont}" 	value="${cantidad}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
 					<td>
 						<span  class="precio_compra_${cont}">${precio_compra}</span>
-						<input type="hidden" name="precio_compra[]" class="precio_compra_${cont}" value="${precio_compra}" 	step="0.0001" min="0" onkeyup="modificarSubototales(); calcular_precio_x_unidad(${idarticulo});" readonly>
+						<input type="hidden" name="precio_compra[]" class="precio_compra_${cont}" value="${precio_compra}" 	step="0.0001" min="0" onkeyup="modificarSubototales();" readonly>
 					</td>
-					<td><input type="number" name="precio_venta[]" 	class="precio_venta_${cont}" 	value="${e.data.producto.precio_venta}" 	step="0.0001" min="0" onkeyup="modificarSubototales();"></td>
 					<td>
+						<input type="number" name="precio_venta[]" 	class="form-control precio_venta_${cont}" 	value="${e.data.producto.precio_venta}" 	step="0.0001" min="0" onkeyup="modificarSubototales();">
+						<input type="hidden" name="utilidad_xp[]" class="utilidad_xp_${cont}" value="0">
+						<input type="hidden" name="utilidad_tp[]" class="utilidad_tp_${cont}" value="0">
+					</td>
+					<td class="text-right">
 						<span name="subtotal" class="subtotal_${cont}">${subtotal}</span>
 						<input type="hidden" name="subtotal_pr[]" class="subtotal_${cont}" value="${subtotal}">
 					</td>
@@ -272,7 +285,7 @@ function agregarDetalle(idarticulo, img) {
 				cont++;
 				modificarSubototales();
 				$(`.btn-add-pr-${idarticulo}`).html(`<span class="fa fa-plus"></span>`);
-				console.log(array_class_compra);
+				//console.log(array_class_compra);
 			});			
 		}
 	}	else {
@@ -296,9 +309,14 @@ function modificarSubototales() {
 			
 			// Calculamos: precio unitario de cada producto
 			var precio_unitario = precio_caja / cantidad;	
+			var utilidad_xp				= venta - precio_unitario;
+			var utilidad_tp				= utilidad_xp * cantidad;
 			
 			$(`.subtotal_${val.id_cont}`).html(formato_miles(subtotal_producto)).val( redondearExp(subtotal_producto) );			
-			$(`.precio_compra_${val.id_cont}`).html(formato_miles(precio_unitario)).val( redondearExp(precio_unitario) );			
+			$(`.precio_compra_${val.id_cont}`).html(formato_miles(precio_unitario)).val( redondearExp(precio_unitario) );		
+			$(`.precio_venta_${val.id_cont}`).attr('min',redondearExp(precio_unitario));	
+			$(`.utilidad_xp_${val.id_cont}`).val(redondearExp(utilidad_xp));	
+			$(`.utilidad_tp_${val.id_cont}`).val(redondearExp(utilidad_tp));				
 		});
 		
 	}
@@ -307,17 +325,25 @@ function modificarSubototales() {
 }
 
 function calcularTotales() {
-	var igv = $('#impuesto').val();
-	var total = 0.0;
+	var val_igv 	= $('#impuesto').val() == '' || $(`#impuesto`).val() == null ? 0 : parseFloat($(`#impuesto`).val());
+	var igv 			= 0; var precio_sin_igv 			= 0;
+	var total 		= 0.0;
+	var utilidad 	= 0.0;
 
 	array_class_compra.forEach((element, index) => {
-    total += parseFloat($(`.subtotal_${element.id_cont}`).val()); console.log(total);
+    total += parseFloat($(`.subtotal_${element.id_cont}`).val()); //console.log(total);
     // descuento += parseFloat($(`.descuento_${element.id_cont}`).val());
-    // utilidad += parseFloat($(`.utilidad_${element.id_cont}`).val());
+    utilidad += parseFloat($(`.utilidad_tp_${element.id_cont}`).val());
   });
 
-	$("#total").html("S/. " + formato_miles(total));
-	$("#total_compra").val(redondearExp(total, 2));
+	val_igv 				= val_igv / 100;
+	precio_sin_igv 	= total / (1 + val_igv);
+	igv 						= total - precio_sin_igv; console.log(val_igv, precio_sin_igv, igv);
+
+	$("#subtotal").html("S/. " + formato_miles(precio_sin_igv));	$("#subtotal_compra").val(redondearExp(precio_sin_igv));
+	$("#igv").html("S/. " + formato_miles(igv));	$("#igv_compra").val(redondearExp(igv)); $(".igv_percent").html(`IGV (${val_igv * 100}%)`);
+	$("#total").html("S/. " + formato_miles(total));	$("#total_compra").val(redondearExp(total));
+	$("#total_utilidad").val(redondearExp(utilidad));
 	evaluar();
 }
 
@@ -355,9 +381,21 @@ function calcular_segun_um(id) {
 	$(`.name-um-${id}`).html(nombre_um);
 }
 
-function calcular_precio_x_unidad(id) {	
+function calcular_precio_x_unidad(id, cont) {	console.log(id, cont);
 	var cantidad = $(`.cantidad_x_um_${id}`).val() == ''  || $(`.cantidad_x_um_${id}`).val() == null ? 0 : parseFloat($(`.cantidad_x_um_${id}`).val()) ;
-	var precio_compra = $(`.precio_compra_${id}`).val() == '' || $(`.precio_compra_${id}`).val() == null ? 0 : parseFloat($(`.precio_compra_${id}`).val()) ;
+	var precio_compra = $(`.precio_compra_${cont}`).val() == '' || $(`.precio_compra_${cont}`).val() == null ? 0 : parseFloat($(`.precio_compra_${cont}`).val()) ;
 	// console.log(cantidad); console.log(precio_compra);
 	$(`.precio_x_um_${id}`).val(redondearExp(precio_compra/cantidad, 2));
+	$(`.precio_venta_${cont}`).attr('min',redondearExp(precio_compra/cantidad, 2));
+
+}
+
+function detalle_x_comprobante(id) {
+	$(".detalle-x-comprobante").html(`<div class="text-center"><i class="fa fa-fw fa-spinner fa-pulse fa-2x"></i> <br> Cargando datos...</div>  `);
+	$('.tooltip').remove();
+	$("#modal-ver-detalle").modal('show');
+	$.post("../ajax/ajax_general.php?op=detalle_x_comprobante_compra", {id:id}, function (e) {	
+		e = JSON.parse(e); console.log(e);
+		$(".detalle-x-comprobante").html(e.data);	
+	});	
 }

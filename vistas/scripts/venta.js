@@ -344,11 +344,9 @@ function ver_editar(id) {
 			e = JSON.parse(e); console.log(e);
 
 			$("#idventa").val(e.data.persona.idventa);
-			$("#idcliente").val(e.data.persona.idcliente);
-			$("#idcliente").selectpicker('refresh');
 
-			$("#tipo_comprobante").val(e.data.persona.tipo_comprobante);
-			$("#tipo_comprobante").selectpicker('refresh');
+			$("#idcliente").val(e.data.persona.idcliente);	$("#idcliente").selectpicker('refresh');
+			$("#tipo_comprobante").val(e.data.persona.tipo_comprobante);$("#tipo_comprobante").selectpicker('refresh');
 			
 			$("#fecha_hora").val(e.data.persona.fecha);
 			$("#impuesto").val(e.data.persona.impuesto);
@@ -392,8 +390,8 @@ function ver_editar(id) {
 			$("#cargando-1-fomulario").show();
       $("#cargando-2-fomulario").hide();
 		});			
-	}	else {
-		alert("Error al ingresar el detalle, revisar los datos del artículo");
+	}	else {		
+		toastr_error('Error!!', `Error al ver el detalle, revisar los datos de la venta`);
 	}
 }
 

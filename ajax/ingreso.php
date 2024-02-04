@@ -41,6 +41,11 @@ if (!isset($_SESSION["nombre"])) {
 					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_caja"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"], $_POST["utilidad_xp"], $_POST["utilidad_tp"]);
 					echo json_encode($rspta, true);
 				} else {
+					
+					$rspta = $ingreso->editar($idingreso, $idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, 
+					$subtotal_compra, $igv_compra, $total_compra, $total_utilidad,
+					$_POST["unidad_medida"],$_POST["idarticulo"], $_POST["cantidad"], $_POST["precio_caja"], $_POST["precio_compra"], $_POST["precio_venta"], $_POST["subtotal_pr"], $_POST["utilidad_xp"], $_POST["utilidad_tp"]);
+					echo json_encode($rspta, true);
 				}
 			break;
 
@@ -121,7 +126,7 @@ if (!isset($_SESSION["nombre"])) {
 					$url = '../reportes/exTicketCompra.php?idingreso=';
 
 					$data[] = array(
-						"0" => '<button class="btn btn-warning btn-sm" onclick="mostrar(' . $reg->idingreso . ')"><i class="fa fa-fw fa-pencil"></i></button>' .
+						"0" => '<button class="btn btn-warning btn-sm" onclick="ver_editar(' . $reg->idingreso . ')"><i class="fa fa-fw fa-pencil"></i></button>' .
 						' <button class="btn btn-info btn-sm" onclick="detalle_x_comprobante(' . $reg->idingreso . ')" data-toggle="tooltip" data-placement="top" title="ver"><i class="fa fa-eye"></i></button>'.
 						(($reg->estado == 'Aceptado') ?  ' <button class="btn btn-danger btn-sm" onclick="anular(' . $reg->idingreso . ')"><i class="fa fa-close"></i></button>' :'') .
 						'<a target="_blank" href="' . $url . $reg->idingreso . '"> <button class="btn bg-purple btn-sm" data-toggle="tooltip" data-placement="top" title="Imprimir"><i class="fa fa-file"></i></button></a>',

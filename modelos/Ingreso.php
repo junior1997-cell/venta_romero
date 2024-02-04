@@ -26,8 +26,7 @@ Class Ingreso
 			VALUES ('$idproveedor','$idusuario','$tipo_comprobante','$serie_comprobante','$num_comprobante','$fecha_hora','$impuesto', '$subtotal_compra', '$igv_compra', '$total_compra', '$total_utilidad')";		
 			$idingresonew=ejecutarConsulta_retornarID($sql);
 
-			$ii=0;
-			
+			$ii=0;	
 
 			while ($ii < count($idarticulo))	{
 				$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad, precio_compra, precio_venta, subtotal, cantidad_x_um, precio_x_um, utilidad_pxp, utilidad_ptp) VALUES 
@@ -61,6 +60,45 @@ Class Ingreso
 		}	
 	}
 
+	//Implementamos un método para anular categorías
+	public function editar( $idingreso, $idproveedor, $idusuario, $tipo_comprobante, $serie_comprobante, $num_comprobante, $fecha_hora, $impuesto, 
+	$subtotal_compra, $igv_compra, $total_compra, $total_utilidad,
+	$unidad_medida, $idarticulo, $cantidad, $precio_caja, $precio_compra, $precio_venta, $subtotal_pr, $utilidad_xp, $utilidad_tp ){
+		
+		$sql_1 = "UPDATE ingreso SET idproveedor='$idproveedor', idusuario='$idusuario', tipo_comprobante='$tipo_comprobante', serie_comprobante='$serie_comprobante', 
+		num_comprobante='$num_comprobante', fecha_hora='$fecha_hora', impuesto='$impuesto', descuento='0', subtotal='$subtotal_compra', 
+		igv='$igv_compra', total_compra='$total_compra', utilidad_p='$total_utilidad' WHERE  idingreso='$idingreso'";
+		ejecutarConsulta($sql_1);
+
+		// quitamos el STOCK
+		$sql_0="SELECT * FROM detalle_ingreso WHERE idingreso = '$idingreso' ";
+		$detalle = ejecutarConsultaArray($sql_0);
+
+		foreach ($detalle as $key => $val) {			
+			$sql_producto = "UPDATE articulo SET stock = stock - '".$val['cantidad']."' WHERE idarticulo = '".$val['idarticulo']."'";
+			ejecutarConsulta($sql_producto);
+		}		
+
+		// Eliminamos el Detalle		
+		$sql_0="DELETE FROM detalle_ingreso WHERE idingreso = '$idingreso' ";
+		ejecutarConsulta($sql_0);
+
+		$ii=0;	
+
+		while ($ii < count($idarticulo))	{
+			$sql_detalle = "INSERT INTO detalle_ingreso(idingreso, idarticulo, idunida_medida, cantidad, precio_compra, precio_venta, subtotal, cantidad_x_um, precio_x_um, utilidad_pxp, utilidad_ptp) VALUES 
+			('$idingreso', '$idarticulo[$ii]', '$unidad_medida[$ii]', '1','$precio_caja[$ii]','$precio_venta[$ii]', '$subtotal_pr[$ii]', '$cantidad[$ii]', '$precio_compra[$ii]', '$utilidad_xp[$ii]', '$utilidad_tp[$ii]')";
+			ejecutarConsulta($sql_detalle);
+
+			// Aumentamos el STOCK 
+			$sql_producto = "UPDATE articulo SET stock = stock + '$cantidad[$ii]', precio_compra = '$precio_compra[$ii]', precio_venta = '$precio_venta[$ii]' WHERE idarticulo = '$idarticulo[$ii]'";
+			ejecutarConsulta($sql_producto);
+
+			$ii=$ii + 1;
+		}
+
+		return  $sw = array( 'status' => true, 'message' => 'todo ok ejecutarConsulta', 'data' => [], 'id_tabla' => '' );
+	}
 	
 	//Implementamos un método para anular categorías
 	public function anular($idingreso){
@@ -86,7 +124,7 @@ Class Ingreso
 		WHERE i.idingreso='$idingreso'";
 		$persona = ejecutarConsultaSimpleFila($sql);
 
-		$sql1 = "SELECT dv.iddetalle_ingreso, dv.cantidad, dv.precio_compra, dv.precio_venta, dv.cantidad_x_um, dv.precio_x_um, dv.subtotal,
+		$sql1 = "SELECT dv.idarticulo, dv.iddetalle_ingreso, dv.cantidad, dv.precio_compra, dv.precio_venta, dv.cantidad_x_um, dv.precio_x_um, dv.subtotal,
 		a.nombre as articulo, um.nombre as unida_medida
 		FROM detalle_ingreso as dv 
 		INNER JOIN ingreso AS i ON i.idingreso = dv.idingreso
@@ -94,12 +132,27 @@ Class Ingreso
 		INNER JOIN unida_medida AS um ON um.idunida_medida = dv.idunida_medida WHERE dv.idingreso='$idingreso'";
 		$detalle = ejecutarConsultaArray($sql1);
 
+		$sql3 = "SELECT * FROM unida_medida  WHERE estado = '1';";
+		$detalle_um = ejecutarConsultaArray($sql3); 
+
+		$array_um_id = []; $array_um = []; $um_html_option = ""; $array_um_name = [];
+		foreach ($detalle_um as $key => $val2) { array_push($array_um_id, $val2['idunida_medida'] ); }
+		foreach ($detalle_um as $key => $val2) { $array_um[] = [ 'id' => $val2['idunida_medida'], 'nombre' => $val2['nombre'], 'abreviatura' => $val2['abreviatura'] ]; }
+		foreach ($detalle_um as $key => $val2) { $um_html_option .= '<option value="'.$val2['idunida_medida'].'"  >'.$val2['nombre'].'</option>'; }
+		foreach ($detalle_um as $key => $val2) { array_push($array_um_name, $val2['nombre'] ); }
+
 		return $retorno = [
 			"status" 	=> true, 
 			"message" => 'todo oka', 
 			"data" 		=>  [
 				"persona" 	=> $persona, 
 				"detalle" 	=> $detalle, 
+				'um'          => [
+					'id_um'        	=> $array_um_id,
+					'um'          	=> $array_um_name,
+					'array_ums'    	=> $array_um,
+					'um_html_option'=> $um_html_option,
+				]
 			] 
 		] ;
 	}
@@ -154,9 +207,12 @@ Class Ingreso
 	}
 
 	//Implementar un método para listar los registros
-	public function listar()
-	{
-		$sql="SELECT i.idingreso,DATE(i.fecha_hora) as fecha,i.idproveedor,p.nombre as proveedor,u.idusuario,u.nombre as usuario,i.tipo_comprobante,i.serie_comprobante,i.num_comprobante,i.total_compra,i.impuesto,i.estado FROM ingreso i INNER JOIN persona p ON i.idproveedor=p.idpersona INNER JOIN usuario u ON i.idusuario=u.idusuario ORDER BY i.idingreso desc";
+	public function listar()	{
+		$sql="SELECT i.idingreso,DATE(i.fecha_hora) as fecha,i.idproveedor,p.nombre as proveedor,u.idusuario,u.nombre as usuario,i.tipo_comprobante,i.serie_comprobante,
+		i.num_comprobante,i.total_compra,i.impuesto,i.estado 
+		FROM ingreso i 
+		INNER JOIN persona p ON i.idproveedor=p.idpersona 
+		INNER JOIN usuario u ON i.idusuario=u.idusuario ORDER BY i.fecha_hora desc, estado desc";
 		return ejecutarConsulta($sql);		
 	}
 	

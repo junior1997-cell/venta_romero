@@ -53,77 +53,88 @@ if (!isset($_SESSION["nombre"])) {
               </div>
               <div class="panel-body" style="height: 100%; display: none !important;" id="formularioregistros">
                 <form name="formulario" id="formulario" method="POST">
-                  <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                    <label>Proveedor(*):</label>
+                  
+                  <div class="row" id="cargando-1-fomulario">
+                  
                     <input type="hidden" name="idingreso" id="idingreso">
-                    <select id="idproveedor" name="idproveedor" class="form-control selectpicker" data-live-search="true" required>
 
-                    </select>
-                  </div>
-                  <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <label>Fecha(*):</label>
-                    <input type="date" class="form-control" name="fecha_hora" id="fecha_hora" required="" value="<?php echo date("Y-m-d"); ?>">
-                  </div>
-                  <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <label>Tipo Comprobante(*):</label>
-                    <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required="" >
-                      <option value="Boleta">Boleta</option>
-                      <option value="Factura">Factura</option>
-                      <option value="Ticket">Ticket</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <label>Serie:</label>
-                    <input type="text" class="form-control" name="serie_comprobante" id="serie_comprobante" maxlength="7" placeholder="Serie">
-                  </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <label>Número:</label>
-                    <input type="text" class="form-control" name="num_comprobante" id="num_comprobante" maxlength="10" placeholder="Número" required="">
-                  </div>
-                  <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
-                    <label>Impuesto:</label>
-                    <input type="number" class="form-control" name="impuesto" id="impuesto" required="" min="0" max="100" onchange="modificarSubototales();" onkeyup="modificarSubototales();">
-                  </div>
-                  <div class="form-group col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <a data-toggle="modal" href="#myModal">
-                      <button id="btnAgregarArt" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> Agregar Artículos</button>
-                    </a>
+                    <div class="form-group col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                      <label>Proveedor(*):</label>                    
+                      <select id="idproveedor" name="idproveedor" class="form-control selectpicker" data-live-search="true" required> </select>
+                    </div>
+
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                      <label>Fecha(*):</label>
+                      <input type="date" class="form-control" name="fecha_hora" id="fecha_hora" required="" value="<?php echo date("Y-m-d"); ?>">
+                    </div>
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                      <label>Tipo Comprobante(*):</label>
+                      <select name="tipo_comprobante" id="tipo_comprobante" class="form-control selectpicker" required="" >
+                        <option value="Boleta">Boleta</option>
+                        <option value="Factura">Factura</option>
+                        <option value="Ticket">Ticket</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                      <label>Serie:</label>
+                      <input type="text" class="form-control" name="serie_comprobante" id="serie_comprobante" maxlength="7" placeholder="Serie">
+                    </div>
+                    <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                      <label>Número:</label>
+                      <input type="text" class="form-control" name="num_comprobante" id="num_comprobante" maxlength="10" placeholder="Número" required="">
+                    </div>
+                    <div class="form-group col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                      <label>Impuesto:</label>
+                      <input type="number" class="form-control" name="impuesto" id="impuesto" required="" min="0" max="100" onchange="modificarSubototales();" onkeyup="modificarSubototales();">
+                    </div>
+                    <div class="form-group col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                      <a data-toggle="modal" href="#myModal">
+                        <button id="btnAgregarArt" type="button" class="btn btn-primary"> <span class="fa fa-plus"></span> Agregar Artículos</button>
+                      </a>
+                    </div>
+
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 table-responsive">
+                      <table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
+                        <thead style="background-color:#A9D0F5">
+                          <th>Opciones</th>
+                          <th>Artículo</th>
+                          <th>Cantidad</th>
+                          <th>Precio Caja</th>
+                          <th>Precio Unitario</th>
+                          <th>Precio Venta</th>
+                          <th>Subtotal</th>
+                        </thead>
+                        <tfoot>                        
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th></th>
+                          <th class="text-right"><h5><b>SUBTOTAL</b></h5><h5><b class="igv_percent" >IGV (0%)</b></h5><h4><b>TOTAL</b></h4></th>
+                          <th class="text-right text-nowrap">
+                            <h5 id="subtotal">S/. 0.00 </h5> <input type="hidden" name="subtotal_compra" id="subtotal_compra" >
+                            <h5 id="igv">S/. 0.00 </h5> <input type="hidden" name="igv_compra" id="igv_compra" >
+                            <h4 id="total">S/. 0.00 </h4> <input type="hidden" name="total_compra" id="total_compra" >
+                            <input type="hidden" name="total_utilidad" id="total_utilidad" >
+                          </th>
+                        </tfoot>
+                        <tbody>
+
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
-                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 table-responsive">
-                    <table id="detalles" class="table table-striped table-bordered table-condensed table-hover">
-                      <thead style="background-color:#A9D0F5">
-                        <th>Opciones</th>
-                        <th>Artículo</th>
-                        <th>Cantidad</th>
-                        <th>Precio Caja</th>
-                        <th>Precio Unitario</th>
-                        <th>Precio Venta</th>
-                        <th>Subtotal</th>
-                      </thead>
-                      <tfoot>                        
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th class="text-right"><h5><b>SUBTOTAL</b></h5><h5><b class="igv_percent" >IGV (0%)</b></h5><h4><b>TOTAL</b></h4></th>
-                        <th class="text-right text-nowrap">
-                          <h5 id="subtotal">S/. 0.00 </h5> <input type="hidden" name="subtotal_compra" id="subtotal_compra" >
-                          <h5 id="igv">S/. 0.00 </h5> <input type="hidden" name="igv_compra" id="igv_compra" >
-                          <h4 id="total">S/. 0.00 </h4> <input type="hidden" name="total_compra" id="total_compra" >
-                          <input type="hidden" name="total_utilidad" id="total_utilidad" >
-                        </th>
-                      </tfoot>
-                      <tbody>
-
-                      </tbody>
-                    </table>
+                  <div class="row" id="cargando-2-fomulario" style="display: none;">
+                    <div class="col-lg-12 text-center">
+                      <i class="fa fa-fw fa-spinner fa-pulse fa-2x"></i><br /><h4>Cargando...</h4>
+                    </div>
                   </div>
 
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <button class="btn btn-primary" type="submit" id="btnGuardar"><i class="fa fa-save"></i> Guardar</button>
-
                     <button id="btnCancelar" class="btn btn-danger" onclick="cancelarform()" type="button"><i class="fa fa-arrow-circle-left"></i> Cancelar</button>
                   </div>
                 </form>

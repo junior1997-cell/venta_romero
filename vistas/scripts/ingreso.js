@@ -362,6 +362,81 @@ function eliminarDetalle(cont, id) {
 	evaluar();
 }
 
+function ver_editar(id) {
+	
+	$("#cargando-1-fomulario").hide();
+  $("#cargando-2-fomulario").show(); 
+	
+		mostrarform(true);
+		var cantidad = 1;
+		var descuento = 0;
+
+		if (id != "") {
+			$.post("../ajax/ingreso.php?op=compra_editar", { idingreso: id }, function (e) {
+				e = JSON.parse(e); console.log(e);
+				
+				$("#idingreso").val(e.data.persona.idingreso);
+				$("#idproveedor").val(e.data.persona.idproveedor); 					$("#idproveedor").selectpicker('refresh');
+				$("#tipo_comprobante").val(e.data.persona.tipo_comprobante);	$("#tipo_comprobante").selectpicker('refresh');
+				$("#serie_comprobante").val(e.data.persona.serie_comprobante);
+				$("#num_comprobante").val(e.data.persona.num_comprobante);
+				$("#fecha_hora").val(e.data.persona.fecha);
+				$("#impuesto").val(e.data.persona.impuesto);	
+
+				e.data.detalle.forEach((val, key) => {
+					var img = val.imagen == '' || val.imagen == null ? 'producto-sin-foto.svg' : val.imagen ;
+					var fila = `<tr class="filas producto_selecionado" id="fila_${val.idarticulo}">
+						<td>
+							<button type="button" class="btn btn-danger" onclick="eliminarDetalle(${cont}, ${val.idarticulo})">X</button>					
+						</td>
+						<td>
+							<div class="user-block">
+								<img class="img-circle" src="../files/articulos/${img}" alt="User Image">
+								<span class="username"><a href="#">${val.articulo}</a></span>				 
+								<div class="description">
+									<select name="unidad_medida[]" id="unidad_medida_${val.idarticulo}" class="form-control-sm " required="" onchange="calcular_segun_um(${val.idarticulo})">
+										${e.data.um.um_html_option}
+									</select>			
+								</div>
+							</div>
+							<input type="hidden" name="idarticulo[]" value="${val.idarticulo}">
+						</td>
+						<td><input type="number" name="cantidad[]" 			class="form-control cantidad_${cont}" 			value="${val.cantidad_x_um}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+						<td><input type="number" name="precio_caja[]" 	class="form-control precio_caja_${cont}" 	value="${val.precio_compra}" 			step="0.0001" min="0" onkeyup="modificarSubototales(); "></td>
+						<td>
+							<span  class="precio_compra_${cont}">${val.precio_x_um}</span>
+							<input type="hidden" name="precio_compra[]" class="precio_compra_${cont}" value="${val.precio_x_um}" 	step="0.0001" min="0" onkeyup="modificarSubototales();" readonly>
+						</td>
+						<td>
+							<input type="number" name="precio_venta[]" 	class="form-control precio_venta_${cont}" 	value="${val.precio_venta}" 	step="0.0001" min="0" onkeyup="modificarSubototales();">
+							<input type="hidden" name="utilidad_xp[]" class="utilidad_xp_${cont}" value="0">
+							<input type="hidden" name="utilidad_tp[]" class="utilidad_tp_${cont}" value="0">
+						</td>
+						<td class="text-right">
+							<span name="subtotal" class="subtotal_${cont}">${val.subtotal}</span>
+							<input type="hidden" name="subtotal_pr[]" class="subtotal_${cont}" value="${val.subtotal}">
+						</td>
+						<td><button type="button" onclick="modificarSubototales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>
+					</tr>`;
+					
+					detalles = detalles + 1;
+					$('#detalles').append(fila);
+
+					array_class_compra.push({ id_cont: cont });
+
+					cont++;
+					modificarSubototales();
+				});
+
+				$("#cargando-1-fomulario").show();
+				$("#cargando-2-fomulario").hide();
+			});	
+		} else {
+			toastr_error('Error!!', `Error al ver el detalle, revisar los datos de la compra`);
+		}
+	
+}
+
 init();
 
 function ver_mas_opciones(id, op) {

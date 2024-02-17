@@ -53,7 +53,7 @@ Class Articulo
 	public function listar()
 	{
 		$sql="SELECT a.idarticulo,a.idcategoria,c.nombre as categoria,a.codigo,a.nombre,a.stock,a.descripcion,a.imagen,a.condicion, precio_venta, precio_compra 
-		FROM articulo a INNER JOIN categoria c ON a.idcategoria=c.idcategoria";
+		FROM articulo a INNER JOIN categoria c ON a.idcategoria=c.idcategoria ORDER BY a.condicion DESC, a.nombre ASC";
 		return ejecutarConsulta($sql);		
 	}
 
